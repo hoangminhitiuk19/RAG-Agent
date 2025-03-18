@@ -1,11 +1,11 @@
 // Central configuration file
 
 // API Configuration
-export const API_URL = 'https://regenx-api-24jfqechxq-as.a.run.app';
+export const API_URL = import.meta.env.VITE_API_URL || 'https://regenx-api-24jfqechxq-as.a.run.app';
 
 // Supabase Configuration
-export const SUPABASE_URL = 'https://kgbfhcjzsujcrmjjavdm.supabase.co';
-export const SUPABASE_ANON_KEY = window.__env?.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'your-default-supabase-anon-key';
+export const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://kgbfhcjzsujcrmjjavdm.supabase.co';
+export const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-default-supabase-anon-key';
 
 // Application Version
 export const APP_VERSION = '1.0.0';

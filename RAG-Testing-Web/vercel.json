@@ -1,10 +1,12 @@
 {
-  "env": {
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@REGENX_SERVICE_ROLE_KEY"
-  },
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "devCommand": "npm run dev",
   "installCommand": "npm install",
-  "framework": "vite"
+  "framework": "vite",
+  "environmentVariables": {
+    "VITE_SUPABASE_URL": "production",
+    "VITE_SUPABASE_ANON_KEY": "production",
+    "VITE_API_URL": "production" 
+  }
 }
