@@ -1,6 +1,6 @@
 {
   "env": {
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@supabase-anon-key"
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@REGENX_SERVICE_ROLE_KEY"
   },
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
