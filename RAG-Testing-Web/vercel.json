@@ -3,10 +3,5 @@
   "outputDirectory": "dist",
   "devCommand": "npm run dev",
   "installCommand": "npm install",
-  "framework": "vite",
-  "environmentVariables": {
-    "VITE_SUPABASE_URL": "production",
-    "VITE_SUPABASE_ANON_KEY": "production",
-    "VITE_API_URL": "production" 
-  }
+  "framework": "vite"
 }

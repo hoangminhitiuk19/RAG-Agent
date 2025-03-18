@@ -1,19 +1,20 @@
 // Application initialization and event binding
 import { API_URL, SUPABASE_URL, SUPABASE_ANON_KEY, DEFAULT_USER_ID, DEFAULT_FARM_ID, APP_VERSION } from '@src/config.js';
-import { setupDomElements } from '../src/utils/domUtils.js';
-import { setupEventListeners } from '../src/utils/eventUtils.js';
-import { sendMessage } from '../src/services/chatService.js';
-import { startNewConversation, updateConversationId, updateActiveConversation } from '../src/utils/conversationUIUtils.js';
-import { loadConversations } from '../src/services/conversationService.js';
-import { checkApiHealth } from '../src/services/apiHealthService.js';
-import { initializeUserData } from '../src/services/userService.js';
-import { preventCaching } from '../src/utils/cacheUtils.js';
-import { addTranslationNoticeStyles } from '../src/utils/uiEnhancements.js';
-import { addDevReloadButton } from '../src/utils/devUtils.js';
-import { setupDebugTools } from '../src/utils/debugUtils.js';
-import { createSupabaseClient, validateSupabaseClient } from '../src/utils/supabaseService.js';
-import { uploadImage } from '../src/services/imageService.js';
-import { setUserId, setFarmId, setConversations } from '../src/utils/state.js';
+import { setupDomElements } from '@src/utils/domUtils.js';
+import { setupEventListeners } from '@src/utils/eventUtils.js';
+import { sendMessage } from '@src/services/chatService.js';
+import { startNewConversation, updateConversationId, updateActiveConversation } from '@src/utils/conversationUIUtils.js';
+import { loadConversations } from '@src/services/conversationService.js';
+import { checkApiHealth } from '@src/services/apiHealthService.js';
+import { initializeUserData } from '@src/services/userService.js';
+import { preventCaching } from '@src/utils/cacheUtils.js';
+import { addTranslationNoticeStyles } from '@src/utils/uiEnhancements.js';
+import { addDevReloadButton } from '@src/utils/devUtils.js';
+import { setupDebugTools } from '@src/utils/debugUtils.js';
+import { createSupabaseClient, validateSupabaseClient } from '@src/utils/supabaseService.js';
+import { uploadImage } from '@src/services/imageService.js';
+import { setUserId, setFarmId, setConversations } from '@src/utils/state.js';
+
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', async () => {
