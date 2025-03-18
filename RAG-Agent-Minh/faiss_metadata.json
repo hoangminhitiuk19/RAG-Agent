@@ -1,0 +1,358 @@
+{
+    "0": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Coffee\\Coffee_Nutritional management.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "section": "Document",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "SUMMARIZE NUTRITIONAL REQUIREMENT OF COFFEE 1. Nitrogen 1.1 Roles of Nitrogen in each Growth Stage in Coffee Establishment Stage (0–6 months after planting): Supports early root and shoot development,"
+    },
+    "1": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Coffee\\Coffee_Nutritional management.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "coffee",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "SUMMARIZE NUTRITIONAL REQUIREMENT OF COFFEE 1. Nitrogen 1.1 Roles of Nitrogen in each Growth Stage in Coffee Establishment Stage (0–6 months after planting): Supports early root and shoot development,"
+    },
+    "2": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Coffee\\Coffee_Nutritional management.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "fertilizer",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Efficient Nitrogen Sources: Favor fish fertilizer, vermicompost, and compost over synthetic urea to improve long-term soil fertility. Regenerative solutions, including biofertilizers, organic amendmen"
+    },
+    "3": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Coffee\\Coffee_Nutritional management.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "soil",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "No direct N application; maintain residual soil fertility. 1.3 Key Considerations for Regenerative Nitrogen Management Soil pH Management: Regular application of organic matter, biochar, and calcium s"
+    },
+    "4": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Coffee\\Coffee_Nutritional management.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "general",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Pre-Flowering/Budding Stage (2–3 years, after the first rains): Supports the differentiation of flower buds, ensures strong flowering potential. Flowering Stage (Flower opening to pollination, ~2 week"
+    },
+    "5": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Coffee\\Coffee_Summary extreme weather adaptation and disease.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "section": "Document",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "SUMMARY EXTREME WEATHER ADAPTATION AND DISEASE IN COFFEE 1. Overview development phases 1.1. Establishment Phase Description: Starts from seed germination to the development of the first true leaves. "
+    },
+    "6": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Coffee\\Coffee_Summary extreme weather adaptation and disease.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "coffee",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "SUMMARY EXTREME WEATHER ADAPTATION AND DISEASE IN COFFEE 1. Early Fruit/Pod Formation Description: Post-pollination, small green coffee cherries begin forming. Formation of coffee bean inside the cher"
+    },
+    "7": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Coffee\\Coffee_Summary extreme weather adaptation and disease.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "fertilizer",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Foliar application of amino acid-based bio-stimulants such as fish fertilizer in the early morning or late afternoon avoids evaporation and reduces the risk of leaf damage from sunlight magnification "
+    },
+    "8": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Coffee\\Coffee_Summary extreme weather adaptation and disease.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "soil",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Soil dries out quickly, causing limited water uptake by young roots. Increased root growth towards deeper soil layers to access moisture. c. Prolonged Rains Impact on Coffee Trees Waterlogged soil res"
+    },
+    "9": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Coffee\\Coffee_Summary extreme weather adaptation and disease.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "climate",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Implement agroforestry systems with shade trees (e.g., Acacia, Albizia) to regulate microclimate. Promote genetic selection for coffee plants with higher adaptability to climate variability. Promote l"
+    },
+    "10": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Coffee\\Coffee_Summary extreme weather adaptation and disease.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "carbon",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Photosynthesis & Energy Regulation: Adaptation of carbon fixation pathways. Prolonged Heatwave Impact on Coffee Trees Reduced cell expansion and leaf area Increased evapotranspiration leading to water"
+    },
+    "11": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Coffee\\Coffee_Summary extreme weather adaptation and disease.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "general",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Overview development phases 1.1. Establishment Phase Description: Starts from seed germination to the development of the first true leaves. Seedlings require optimal temperature (20-28°C) and moisture"
+    },
+    "12": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Coffee\\Robusta Coffee_Caring Techniques_.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "section": "Document",
+        "start_idx": 0,
+        "end_idx": 24,
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Caring Techniques for Robusta Coffee at Each Development Stage in Vietnam 1. Young Tree Stage (6 months – 2 years) Site Preparation & Planting Select well-drained, slightly acidic soil (pH 5.0-6.5). P"
+    },
+    "13": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Coffee\\Robusta Coffee_Caring Techniques_.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "section": "Document",
+        "start_idx": 18,
+        "end_idx": 43,
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Conduct light pruning after harvest to maintain an open canopy structure. Watering & Shade Management Provide supplemental irrigation in dry months to prevent water stress. Adjust shade levels (30-40%"
+    },
+    "14": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Coffee\\Robusta Coffee_Caring Techniques_.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "section": "Document",
+        "start_idx": 36,
+        "end_idx": 45,
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Pest & Disease Management Monitor for coffee berry disease and insect infestations. Apply protective sprays only when necessary to minimize chemical residues. 6. Harvesting & Post-Harvest Care Harvest"
+    },
+    "15": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Coffee\\Robusta Coffee_Caring Techniques_.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "coffee",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Caring Techniques for Robusta Coffee at Each Development Stage in Vietnam 1. Apply organic mulch (dry grass, coffee husks) around the base to retain moisture and regulate temperature. Pest & Disease P"
+    },
+    "16": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Coffee\\Robusta Coffee_Caring Techniques_.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "fertilizer",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Supplement with organic fertilizers (e.g., decomposed manure) twice a year. Vegetative & Canopy Development Fertilization Apply balanced NPK fertilizers (30-10-10 for leaf growth, 20-10-15 for pre-fru"
+    },
+    "17": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Coffee\\Robusta Coffee_Caring Techniques_.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "soil",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Young Tree Stage (6 months – 2 years) Site Preparation & Planting Select well-drained, slightly acidic soil (pH 5.0-6.5). Prepare planting holes (50cm x 50cm x 50cm) and mix topsoil with organic compo"
+    },
+    "18": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Coffee\\Robusta Coffee_Caring Techniques_.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "general",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Space plants at 3m x 3m or 3m x 2.5m for optimal growth and yield. Plant seedlings at the start of the rainy season for better establishment. Watering & Mulching Water regularly, especially in the dry"
+    },
+    "19": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Pepper\\Black Pepper (Piper nigrum)_Nutritional management.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "section": "Document",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Nitrogen in Black Pepper (Piper nigrum) Physiology and Interactions 1.1 Roles of Nitrogen in Black Pepper Physiology Essential for chlorophyll production, which drives photosynthesis and biomass accum"
+    },
+    "20": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Pepper\\Black Pepper (Piper nigrum)_Nutritional management.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "pepper",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Nitrogen in Black Pepper (Piper nigrum) Physiology and Interactions 1.1 Roles of Nitrogen in Black Pepper Physiology Essential for chlorophyll production, which drives photosynthesis and biomass accum"
+    },
+    "21": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Pepper\\Black Pepper (Piper nigrum)_Nutritional management.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "fertilizer",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Sustainable Fertilizer Program Primary Approach: Utilize organic manure, compost, and fermented biofertilizers to reduce synthetic inputs. Expected Benefits: Reduced dependency on synthetic fertilizer"
+    },
+    "22": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Pepper\\Black Pepper (Piper nigrum)_Nutritional management.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "soil",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Enhance microbial inoculation using Azospirillum, Mycorrhizae, and Rhizobacteria for soil health. Apply biochar to retain soil moisture and reduce nutrient leaching. Improved soil health and water ret"
+    },
+    "23": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Pepper\\Black Pepper (Piper nigrum)_Nutritional management.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "general",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Involved in protein synthesis, ensuring the formation of enzymes and structural proteins for growth. Supports the production of hormones such as auxins and cytokinins, which regulate cell division and"
+    },
+    "24": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Pepper\\Black pepper_Caring techniques.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "section": "1. Popular Black Pepper Varieties in Vietnam Vĩnh Linh Variety Strong growth, widely spreading branches, medium-length flower spikes, and densely packed fruits. High yield, with spike length averaging 8.9 cm, bulk density 584.9 g/l, and a dry yield per post of 4.25 kg. Grown mainly in Vietnam’s Central and Southern regions. Lada Belangtoeng Variety Imported from Indonesia in 1947, known for strong growth and resistance to root rot. Slow flowering under low-intensity farming, resulting in lower and unstable yields. Sẻ Black Pepper Varieties Early flowering, high and stable yields in the first few years. Susceptible to quick wilt disease. Common sub-varieties include Sẻ Lộc Ninh, Sẻ Đất Đỏ Bà Rịa, and Sẻ Mỡ Đắk Lắk. Indian Black Pepper Originating from India, with strong growth, medium-sized leaves with wavy edges, early fruiting, and large spikes. Trâu Variety A local variety characterized by large, dark green leaves. Highly resistant to quick wilt but has low and unstable yields. Phú Quốc Variety Originated from Cambodia, well-known for high-quality peppercorns in the 1930s–1940s. Highly susceptible to root diseases, limiting large-scale cultivation. Best Regions in Vietnam for Black Pepper Central Highlands: Đắk Lắk, Gia Lai, Đắk Nông Southeast Region: Bình Phước, Bà Rịa-Vũng Tàu Southwest Region: Phú Quốc 2. Caring Techniques for Black Pepper (Piper nigrum) at Each Development Stage in Vietnam General Care Trellising: Secure vines loosely to avoid restriction. Pruning: First pruning at 10–12 months when vines reach 80–100 cm. Second pruning when vines have 3–5 lateral branches. Irrigation & Drainage Watering Schedule: Dry season: 7–15 days per cycle, depending on soil type. Flowering season: Requires a 30–45-day dry period before watering. Drainage system: Shallow ditches (30 cm deep) between rows. Main drainage channels (60 cm deep, 60 cm wide) at plot edges. 2.1. Nursery Stage Seed Selection Select healthy, disease-free cuttings from high-yielding mother vines (preferably 2-3 nodes long). Disinfect cuttings by soaking them in a fungicide solution (e.g., Bordeaux mixture 1%) before planting. Propagation & Seedling Care Plant cuttings in polybags filled with a mixture of topsoil, compost, and sand (ratio 2:1:1). Provide 50-70% shade and ensure adequate moisture for root development. Apply a light dose of NPK 16-16-8 fertilizer every 3-4 weeks to promote growth. Monitor for damping-off and root rot; use copper-based fungicides if needed. Hardening & Transplant Preparation Gradually expose seedlings to more sunlight (reducing shade to 30-40%) before transplanting. Ensure cuttings have well-developed roots and at least 3-4 healthy leaves before field planting. 2.2. Planting & Early Growth Stage Site Selection & Preparation Choose well-drained, slightly acidic soil (pH 5.5-6.5) with good organic content. Avoid low-lying areas prone to waterlogging to prevent root diseases. Establish support structures (live or dead poles) before planting vines. Planting Process Dig planting holes (40cm x 40cm x 50cm) and mix topsoil with organic compost. Space plants 2.5m x 2.5m or 3m x 3m depending on vine management. Water immediately after planting and mulch around the base to conserve moisture. Initial Training & Support Guide vines onto poles using soft ties to avoid damage. Remove weak or excessive shoots to encourage strong vertical growth. Fertilization & Watering Apply NPK 20-10-10 or composted manure every 2-3 months. Maintain regular watering, especially in the dry season (2-3 times per week). Weed & Disease Control Keep the base weed-free to reduce competition for nutrients. Monitor for root rot, fusarium wilt, and downy mildew; apply fungicides if needed. 2.3. Vegetative Growth & Vine Development Canopy & Vine Management Train vines to grow evenly around the support structure. Prune excess lateral branches to maintain an open, well-ventilated canopy. Nutrient Application Increase nitrogen (N) application to promote vigorous growth. Supplement with micronutrients (zinc, boron, magnesium) to strengthen vines. Irrigation & Mulching Maintain moisture through irrigation during dry periods. Apply organic mulch (dry leaves, coffee husks) to retain soil moisture and regulate temperature. Pest & Disease Prevention Monitor for mealybugs, thrips, and stem borers; use biological control when possible. Prevent fungal infections (e.g., Phytophthora root rot) by ensuring good drainage and applying fungicides when necessary. 2.4. Flowering & Fruit Setting Nutrient Management Switch to NPK 10-10-20 or 12-12-17 to support flowering and fruit development. Apply foliar sprays with boron and calcium to improve fruit set and quality. Pollination & Stress Management Reduce nitrogen application to prevent excessive vegetative growth. Maintain stable soil moisture to prevent flower drop. Pruning & Canopy Maintenance Remove unwanted suckers and excessive growth to improve light penetration. Keep vines well-ventilated to reduce fungal disease risks. Pest & Disease Control Monitor for spike shedding caused by fungal infections. Control thrips, aphids, and mites using organic insecticides when necessary. 2.5. Berry Development & Maturation Watering & Soil Management Provide consistent moisture during fruit development. Avoid excessive watering close to harvest to prevent fungal diseases. Nutrient Application Apply potassium-rich fertilizers (e.g., NPK 12-12-20 or 15-10-25) to improve fruit size and quality. Use well-decomposed manure or compost to enhance soil health. Disease & Pest Control Continue monitoring for root rot and spike drop disease. Protect fruits from berry borers and fungal infections using eco-friendly sprays. 2.6. Harvesting & Post-Harvest Care Harvesting Techniques Harvest when berries turn from green to yellowish-red for maximum quality. Pick only mature spikes to ensure uniform drying and processing. Post-Harvest Processing Dry pepper under the sun or in solar dryers until moisture content reaches 10-12%. Turn drying berries frequently to prevent mold growth. Store dried pepper in airtight bags in a cool, dry place to maintain quality.",
+        "start_idx": 0,
+        "end_idx": 23,
+        "ingestion_date": "2025-03-09",
+        "text_preview": "1. Popular Black Pepper Varieties in Vietnam Vĩnh Linh Variety Strong growth, widely spreading branches, medium-length flower spikes, and densely packed fruits. High yield, with spike length averaging"
+    },
+    "25": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Pepper\\Black pepper_Caring techniques.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "section": "1. Popular Black Pepper Varieties in Vietnam Vĩnh Linh Variety Strong growth, widely spreading branches, medium-length flower spikes, and densely packed fruits. High yield, with spike length averaging 8.9 cm, bulk density 584.9 g/l, and a dry yield per post of 4.25 kg. Grown mainly in Vietnam’s Central and Southern regions. Lada Belangtoeng Variety Imported from Indonesia in 1947, known for strong growth and resistance to root rot. Slow flowering under low-intensity farming, resulting in lower and unstable yields. Sẻ Black Pepper Varieties Early flowering, high and stable yields in the first few years. Susceptible to quick wilt disease. Common sub-varieties include Sẻ Lộc Ninh, Sẻ Đất Đỏ Bà Rịa, and Sẻ Mỡ Đắk Lắk. Indian Black Pepper Originating from India, with strong growth, medium-sized leaves with wavy edges, early fruiting, and large spikes. Trâu Variety A local variety characterized by large, dark green leaves. Highly resistant to quick wilt but has low and unstable yields. Phú Quốc Variety Originated from Cambodia, well-known for high-quality peppercorns in the 1930s–1940s. Highly susceptible to root diseases, limiting large-scale cultivation. Best Regions in Vietnam for Black Pepper Central Highlands: Đắk Lắk, Gia Lai, Đắk Nông Southeast Region: Bình Phước, Bà Rịa-Vũng Tàu Southwest Region: Phú Quốc 2. Caring Techniques for Black Pepper (Piper nigrum) at Each Development Stage in Vietnam General Care Trellising: Secure vines loosely to avoid restriction. Pruning: First pruning at 10–12 months when vines reach 80–100 cm. Second pruning when vines have 3–5 lateral branches. Irrigation & Drainage Watering Schedule: Dry season: 7–15 days per cycle, depending on soil type. Flowering season: Requires a 30–45-day dry period before watering. Drainage system: Shallow ditches (30 cm deep) between rows. Main drainage channels (60 cm deep, 60 cm wide) at plot edges. 2.1. Nursery Stage Seed Selection Select healthy, disease-free cuttings from high-yielding mother vines (preferably 2-3 nodes long). Disinfect cuttings by soaking them in a fungicide solution (e.g., Bordeaux mixture 1%) before planting. Propagation & Seedling Care Plant cuttings in polybags filled with a mixture of topsoil, compost, and sand (ratio 2:1:1). Provide 50-70% shade and ensure adequate moisture for root development. Apply a light dose of NPK 16-16-8 fertilizer every 3-4 weeks to promote growth. Monitor for damping-off and root rot; use copper-based fungicides if needed. Hardening & Transplant Preparation Gradually expose seedlings to more sunlight (reducing shade to 30-40%) before transplanting. Ensure cuttings have well-developed roots and at least 3-4 healthy leaves before field planting. 2.2. Planting & Early Growth Stage Site Selection & Preparation Choose well-drained, slightly acidic soil (pH 5.5-6.5) with good organic content. Avoid low-lying areas prone to waterlogging to prevent root diseases. Establish support structures (live or dead poles) before planting vines. Planting Process Dig planting holes (40cm x 40cm x 50cm) and mix topsoil with organic compost. Space plants 2.5m x 2.5m or 3m x 3m depending on vine management. Water immediately after planting and mulch around the base to conserve moisture. Initial Training & Support Guide vines onto poles using soft ties to avoid damage. Remove weak or excessive shoots to encourage strong vertical growth. Fertilization & Watering Apply NPK 20-10-10 or composted manure every 2-3 months. Maintain regular watering, especially in the dry season (2-3 times per week). Weed & Disease Control Keep the base weed-free to reduce competition for nutrients. Monitor for root rot, fusarium wilt, and downy mildew; apply fungicides if needed. 2.3. Vegetative Growth & Vine Development Canopy & Vine Management Train vines to grow evenly around the support structure. Prune excess lateral branches to maintain an open, well-ventilated canopy. Nutrient Application Increase nitrogen (N) application to promote vigorous growth. Supplement with micronutrients (zinc, boron, magnesium) to strengthen vines. Irrigation & Mulching Maintain moisture through irrigation during dry periods. Apply organic mulch (dry leaves, coffee husks) to retain soil moisture and regulate temperature. Pest & Disease Prevention Monitor for mealybugs, thrips, and stem borers; use biological control when possible. Prevent fungal infections (e.g., Phytophthora root rot) by ensuring good drainage and applying fungicides when necessary. 2.4. Flowering & Fruit Setting Nutrient Management Switch to NPK 10-10-20 or 12-12-17 to support flowering and fruit development. Apply foliar sprays with boron and calcium to improve fruit set and quality. Pollination & Stress Management Reduce nitrogen application to prevent excessive vegetative growth. Maintain stable soil moisture to prevent flower drop. Pruning & Canopy Maintenance Remove unwanted suckers and excessive growth to improve light penetration. Keep vines well-ventilated to reduce fungal disease risks. Pest & Disease Control Monitor for spike shedding caused by fungal infections. Control thrips, aphids, and mites using organic insecticides when necessary. 2.5. Berry Development & Maturation Watering & Soil Management Provide consistent moisture during fruit development. Avoid excessive watering close to harvest to prevent fungal diseases. Nutrient Application Apply potassium-rich fertilizers (e.g., NPK 12-12-20 or 15-10-25) to improve fruit size and quality. Use well-decomposed manure or compost to enhance soil health. Disease & Pest Control Continue monitoring for root rot and spike drop disease. Protect fruits from berry borers and fungal infections using eco-friendly sprays. 2.6. Harvesting & Post-Harvest Care Harvesting Techniques Harvest when berries turn from green to yellowish-red for maximum quality. Pick only mature spikes to ensure uniform drying and processing. Post-Harvest Processing Dry pepper under the sun or in solar dryers until moisture content reaches 10-12%. Turn drying berries frequently to prevent mold growth. Store dried pepper in airtight bags in a cool, dry place to maintain quality.",
+        "start_idx": 17,
+        "end_idx": 42,
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Second pruning when vines have 3–5 lateral branches. Irrigation & Drainage Watering Schedule: Dry season: 7–15 days per cycle, depending on soil type. Flowering season: Requires a 30–45-day dry period"
+    },
+    "26": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Pepper\\Black pepper_Caring techniques.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "section": "1. Popular Black Pepper Varieties in Vietnam Vĩnh Linh Variety Strong growth, widely spreading branches, medium-length flower spikes, and densely packed fruits. High yield, with spike length averaging 8.9 cm, bulk density 584.9 g/l, and a dry yield per post of 4.25 kg. Grown mainly in Vietnam’s Central and Southern regions. Lada Belangtoeng Variety Imported from Indonesia in 1947, known for strong growth and resistance to root rot. Slow flowering under low-intensity farming, resulting in lower and unstable yields. Sẻ Black Pepper Varieties Early flowering, high and stable yields in the first few years. Susceptible to quick wilt disease. Common sub-varieties include Sẻ Lộc Ninh, Sẻ Đất Đỏ Bà Rịa, and Sẻ Mỡ Đắk Lắk. Indian Black Pepper Originating from India, with strong growth, medium-sized leaves with wavy edges, early fruiting, and large spikes. Trâu Variety A local variety characterized by large, dark green leaves. Highly resistant to quick wilt but has low and unstable yields. Phú Quốc Variety Originated from Cambodia, well-known for high-quality peppercorns in the 1930s–1940s. Highly susceptible to root diseases, limiting large-scale cultivation. Best Regions in Vietnam for Black Pepper Central Highlands: Đắk Lắk, Gia Lai, Đắk Nông Southeast Region: Bình Phước, Bà Rịa-Vũng Tàu Southwest Region: Phú Quốc 2. Caring Techniques for Black Pepper (Piper nigrum) at Each Development Stage in Vietnam General Care Trellising: Secure vines loosely to avoid restriction. Pruning: First pruning at 10–12 months when vines reach 80–100 cm. Second pruning when vines have 3–5 lateral branches. Irrigation & Drainage Watering Schedule: Dry season: 7–15 days per cycle, depending on soil type. Flowering season: Requires a 30–45-day dry period before watering. Drainage system: Shallow ditches (30 cm deep) between rows. Main drainage channels (60 cm deep, 60 cm wide) at plot edges. 2.1. Nursery Stage Seed Selection Select healthy, disease-free cuttings from high-yielding mother vines (preferably 2-3 nodes long). Disinfect cuttings by soaking them in a fungicide solution (e.g., Bordeaux mixture 1%) before planting. Propagation & Seedling Care Plant cuttings in polybags filled with a mixture of topsoil, compost, and sand (ratio 2:1:1). Provide 50-70% shade and ensure adequate moisture for root development. Apply a light dose of NPK 16-16-8 fertilizer every 3-4 weeks to promote growth. Monitor for damping-off and root rot; use copper-based fungicides if needed. Hardening & Transplant Preparation Gradually expose seedlings to more sunlight (reducing shade to 30-40%) before transplanting. Ensure cuttings have well-developed roots and at least 3-4 healthy leaves before field planting. 2.2. Planting & Early Growth Stage Site Selection & Preparation Choose well-drained, slightly acidic soil (pH 5.5-6.5) with good organic content. Avoid low-lying areas prone to waterlogging to prevent root diseases. Establish support structures (live or dead poles) before planting vines. Planting Process Dig planting holes (40cm x 40cm x 50cm) and mix topsoil with organic compost. Space plants 2.5m x 2.5m or 3m x 3m depending on vine management. Water immediately after planting and mulch around the base to conserve moisture. Initial Training & Support Guide vines onto poles using soft ties to avoid damage. Remove weak or excessive shoots to encourage strong vertical growth. Fertilization & Watering Apply NPK 20-10-10 or composted manure every 2-3 months. Maintain regular watering, especially in the dry season (2-3 times per week). Weed & Disease Control Keep the base weed-free to reduce competition for nutrients. Monitor for root rot, fusarium wilt, and downy mildew; apply fungicides if needed. 2.3. Vegetative Growth & Vine Development Canopy & Vine Management Train vines to grow evenly around the support structure. Prune excess lateral branches to maintain an open, well-ventilated canopy. Nutrient Application Increase nitrogen (N) application to promote vigorous growth. Supplement with micronutrients (zinc, boron, magnesium) to strengthen vines. Irrigation & Mulching Maintain moisture through irrigation during dry periods. Apply organic mulch (dry leaves, coffee husks) to retain soil moisture and regulate temperature. Pest & Disease Prevention Monitor for mealybugs, thrips, and stem borers; use biological control when possible. Prevent fungal infections (e.g., Phytophthora root rot) by ensuring good drainage and applying fungicides when necessary. 2.4. Flowering & Fruit Setting Nutrient Management Switch to NPK 10-10-20 or 12-12-17 to support flowering and fruit development. Apply foliar sprays with boron and calcium to improve fruit set and quality. Pollination & Stress Management Reduce nitrogen application to prevent excessive vegetative growth. Maintain stable soil moisture to prevent flower drop. Pruning & Canopy Maintenance Remove unwanted suckers and excessive growth to improve light penetration. Keep vines well-ventilated to reduce fungal disease risks. Pest & Disease Control Monitor for spike shedding caused by fungal infections. Control thrips, aphids, and mites using organic insecticides when necessary. 2.5. Berry Development & Maturation Watering & Soil Management Provide consistent moisture during fruit development. Avoid excessive watering close to harvest to prevent fungal diseases. Nutrient Application Apply potassium-rich fertilizers (e.g., NPK 12-12-20 or 15-10-25) to improve fruit size and quality. Use well-decomposed manure or compost to enhance soil health. Disease & Pest Control Continue monitoring for root rot and spike drop disease. Protect fruits from berry borers and fungal infections using eco-friendly sprays. 2.6. Harvesting & Post-Harvest Care Harvesting Techniques Harvest when berries turn from green to yellowish-red for maximum quality. Pick only mature spikes to ensure uniform drying and processing. Post-Harvest Processing Dry pepper under the sun or in solar dryers until moisture content reaches 10-12%. Turn drying berries frequently to prevent mold growth. Store dried pepper in airtight bags in a cool, dry place to maintain quality.",
+        "start_idx": 35,
+        "end_idx": 60,
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Planting Process Dig planting holes (40cm x 40cm x 50cm) and mix topsoil with organic compost. Space plants 2.5m x 2.5m or 3m x 3m depending on vine management. Water immediately after planting and mu"
+    },
+    "27": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Pepper\\Black pepper_Caring techniques.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "section": "1. Popular Black Pepper Varieties in Vietnam Vĩnh Linh Variety Strong growth, widely spreading branches, medium-length flower spikes, and densely packed fruits. High yield, with spike length averaging 8.9 cm, bulk density 584.9 g/l, and a dry yield per post of 4.25 kg. Grown mainly in Vietnam’s Central and Southern regions. Lada Belangtoeng Variety Imported from Indonesia in 1947, known for strong growth and resistance to root rot. Slow flowering under low-intensity farming, resulting in lower and unstable yields. Sẻ Black Pepper Varieties Early flowering, high and stable yields in the first few years. Susceptible to quick wilt disease. Common sub-varieties include Sẻ Lộc Ninh, Sẻ Đất Đỏ Bà Rịa, and Sẻ Mỡ Đắk Lắk. Indian Black Pepper Originating from India, with strong growth, medium-sized leaves with wavy edges, early fruiting, and large spikes. Trâu Variety A local variety characterized by large, dark green leaves. Highly resistant to quick wilt but has low and unstable yields. Phú Quốc Variety Originated from Cambodia, well-known for high-quality peppercorns in the 1930s–1940s. Highly susceptible to root diseases, limiting large-scale cultivation. Best Regions in Vietnam for Black Pepper Central Highlands: Đắk Lắk, Gia Lai, Đắk Nông Southeast Region: Bình Phước, Bà Rịa-Vũng Tàu Southwest Region: Phú Quốc 2. Caring Techniques for Black Pepper (Piper nigrum) at Each Development Stage in Vietnam General Care Trellising: Secure vines loosely to avoid restriction. Pruning: First pruning at 10–12 months when vines reach 80–100 cm. Second pruning when vines have 3–5 lateral branches. Irrigation & Drainage Watering Schedule: Dry season: 7–15 days per cycle, depending on soil type. Flowering season: Requires a 30–45-day dry period before watering. Drainage system: Shallow ditches (30 cm deep) between rows. Main drainage channels (60 cm deep, 60 cm wide) at plot edges. 2.1. Nursery Stage Seed Selection Select healthy, disease-free cuttings from high-yielding mother vines (preferably 2-3 nodes long). Disinfect cuttings by soaking them in a fungicide solution (e.g., Bordeaux mixture 1%) before planting. Propagation & Seedling Care Plant cuttings in polybags filled with a mixture of topsoil, compost, and sand (ratio 2:1:1). Provide 50-70% shade and ensure adequate moisture for root development. Apply a light dose of NPK 16-16-8 fertilizer every 3-4 weeks to promote growth. Monitor for damping-off and root rot; use copper-based fungicides if needed. Hardening & Transplant Preparation Gradually expose seedlings to more sunlight (reducing shade to 30-40%) before transplanting. Ensure cuttings have well-developed roots and at least 3-4 healthy leaves before field planting. 2.2. Planting & Early Growth Stage Site Selection & Preparation Choose well-drained, slightly acidic soil (pH 5.5-6.5) with good organic content. Avoid low-lying areas prone to waterlogging to prevent root diseases. Establish support structures (live or dead poles) before planting vines. Planting Process Dig planting holes (40cm x 40cm x 50cm) and mix topsoil with organic compost. Space plants 2.5m x 2.5m or 3m x 3m depending on vine management. Water immediately after planting and mulch around the base to conserve moisture. Initial Training & Support Guide vines onto poles using soft ties to avoid damage. Remove weak or excessive shoots to encourage strong vertical growth. Fertilization & Watering Apply NPK 20-10-10 or composted manure every 2-3 months. Maintain regular watering, especially in the dry season (2-3 times per week). Weed & Disease Control Keep the base weed-free to reduce competition for nutrients. Monitor for root rot, fusarium wilt, and downy mildew; apply fungicides if needed. 2.3. Vegetative Growth & Vine Development Canopy & Vine Management Train vines to grow evenly around the support structure. Prune excess lateral branches to maintain an open, well-ventilated canopy. Nutrient Application Increase nitrogen (N) application to promote vigorous growth. Supplement with micronutrients (zinc, boron, magnesium) to strengthen vines. Irrigation & Mulching Maintain moisture through irrigation during dry periods. Apply organic mulch (dry leaves, coffee husks) to retain soil moisture and regulate temperature. Pest & Disease Prevention Monitor for mealybugs, thrips, and stem borers; use biological control when possible. Prevent fungal infections (e.g., Phytophthora root rot) by ensuring good drainage and applying fungicides when necessary. 2.4. Flowering & Fruit Setting Nutrient Management Switch to NPK 10-10-20 or 12-12-17 to support flowering and fruit development. Apply foliar sprays with boron and calcium to improve fruit set and quality. Pollination & Stress Management Reduce nitrogen application to prevent excessive vegetative growth. Maintain stable soil moisture to prevent flower drop. Pruning & Canopy Maintenance Remove unwanted suckers and excessive growth to improve light penetration. Keep vines well-ventilated to reduce fungal disease risks. Pest & Disease Control Monitor for spike shedding caused by fungal infections. Control thrips, aphids, and mites using organic insecticides when necessary. 2.5. Berry Development & Maturation Watering & Soil Management Provide consistent moisture during fruit development. Avoid excessive watering close to harvest to prevent fungal diseases. Nutrient Application Apply potassium-rich fertilizers (e.g., NPK 12-12-20 or 15-10-25) to improve fruit size and quality. Use well-decomposed manure or compost to enhance soil health. Disease & Pest Control Continue monitoring for root rot and spike drop disease. Protect fruits from berry borers and fungal infections using eco-friendly sprays. 2.6. Harvesting & Post-Harvest Care Harvesting Techniques Harvest when berries turn from green to yellowish-red for maximum quality. Pick only mature spikes to ensure uniform drying and processing. Post-Harvest Processing Dry pepper under the sun or in solar dryers until moisture content reaches 10-12%. Turn drying berries frequently to prevent mold growth. Store dried pepper in airtight bags in a cool, dry place to maintain quality.",
+        "start_idx": 53,
+        "end_idx": 74,
+        "ingestion_date": "2025-03-09",
+        "text_preview": "2.4. Flowering & Fruit Setting Nutrient Management Switch to NPK 10-10-20 or 12-12-17 to support flowering and fruit development. Apply foliar sprays with boron and calcium to improve fruit set and qu"
+    },
+    "28": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Pepper\\Black pepper_Caring techniques.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "pepper",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Popular Black Pepper Varieties in Vietnam Vĩnh Linh Variety Strong growth, widely spreading branches, medium-length flower spikes, and densely packed fruits. Sẻ Black Pepper Varieties Early flowering,"
+    },
+    "29": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Pepper\\Black pepper_Caring techniques.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "soil",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Irrigation & Drainage Watering Schedule: Dry season: 7–15 days per cycle, depending on soil type. Propagation & Seedling Care Plant cuttings in polybags filled with a mixture of topsoil, compost, and "
+    },
+    "30": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Pepper\\Black pepper_Caring techniques.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "general",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "1. High yield, with spike length averaging 8.9 cm, bulk density 584.9 g/l, and a dry yield per post of 4.25 kg. Grown mainly in Vietnam’s Central and Southern regions. Lada Belangtoeng Variety Importe"
+    },
+    "31": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Pepper\\Pepper_Summary extreme weather adaptation and disease.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "section": "Document",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Summary extreme weather adaptation and disease in Black pepper 1. Overview development phases 1.1 Establishment Phase (0–6 Months) Activities: Seeds or cuttings germinate. Nursery management: Shade, i"
+    },
+    "32": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Pepper\\Pepper_Summary extreme weather adaptation and disease.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "pepper",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Summary extreme weather adaptation and disease in Black pepper 1. Peppercorns begin accumulating essential oils. 2.1 Establishment phase 2.1.1 Impact & Physiological Adaptations of Black Pepper in Res"
+    },
+    "33": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Pepper\\Pepper_Summary extreme weather adaptation and disease.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "fertilizer",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Key Factors: Balanced NPK fertilizers, shade management, and phosphorus boost for flower initiation. Application of silicon-based fertilizers, enhancing heat tolerance. Apply silicon-based biofertiliz"
+    },
+    "34": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Pepper\\Pepper_Summary extreme weather adaptation and disease.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "soil",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Key Factors: Moist soil, partial shade, disease prevention. Soil microbial imbalance, reducing nutrient availability. c. Prolonged Rains Impact on Black Pepper Establishment Soil erosion & root waterl"
+    },
+    "35": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Pepper\\Pepper_Summary extreme weather adaptation and disease.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "climate",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "d. Unexpected Reverse Patterns Climate-Resilient Cultivars: Selecting black pepper genotypes with adaptive traits. Seasonal Microclimate Engineering: Agroforestry approaches buffer against extreme ice"
+    },
+    "36": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Pepper\\Pepper_Summary extreme weather adaptation and disease.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "carbon",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Stomatal closure limits carbon dioxide uptake, affecting photosynthesis. Prolonged Drought Impact on Flowering Phase: Increased flower drop and reduced floral induction due to severe water deficit Str"
+    },
+    "37": {
+        "filename": "D:\\WorkingSpace\\Minh\\RAG-Agent-Minh\\docs\\Pepper\\Pepper_Summary extreme weather adaptation and disease.docx",
+        "file_type": ".docx",
+        "extracted_date": "2025-03-09 01:07:22",
+        "source": "document_extraction",
+        "entity_focus": "general",
+        "ingestion_date": "2025-03-09",
+        "text_preview": "Overview development phases 1.1 Establishment Phase (0–6 Months) Activities: Seeds or cuttings germinate. Nursery management: Shade, irrigation, and nutrient supply are crucial. Transplanting to field"
+    }
+}
