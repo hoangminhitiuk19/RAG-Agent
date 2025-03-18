@@ -1,0 +1,64 @@
+[debug] [2025-03-05T06:41:26.468Z] ----------------------------------------------------------------------
+[debug] [2025-03-05T06:41:26.471Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\RegenX-Dev\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init hosting
+[debug] [2025-03-05T06:41:26.472Z] CLI Version:   13.32.0
+[debug] [2025-03-05T06:41:26.472Z] Platform:      win32
+[debug] [2025-03-05T06:41:26.472Z] Node Version:  v23.6.1
+[debug] [2025-03-05T06:41:26.472Z] Time:          Wed Mar 05 2025 13:41:26 GMT+0700 (Indochina Time)
+[debug] [2025-03-05T06:41:26.472Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-03-05T06:41:26.482Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-03-05T06:41:26.483Z] > authorizing via signed-in user (minh@regenx.ag)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  D:\WorkingSpace\Minh\RAG-System\web-client
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[info] i  If you want to create a project in a Google Cloud organization or folder, please use "firebase projects:create" instead, and return to this command when you've created the project. 
+[debug] [2025-03-05T06:41:59.994Z] Checked if tokens are valid: true, expires at: 1741160397179
+[debug] [2025-03-05T06:41:59.994Z] Checked if tokens are valid: true, expires at: 1741160397179
+[debug] [2025-03-05T06:41:59.995Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects [none]
+[debug] [2025-03-05T06:41:59.995Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"projectId":"rag-web-client","name":"rag-web-client"}
+[debug] [2025-03-05T06:42:00.772Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects 200
+[debug] [2025-03-05T06:42:00.772Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"name":"operations/cp.6661753043259929737"}
+[debug] [2025-03-05T06:42:00.773Z] Checked if tokens are valid: true, expires at: 1741160397179
+[debug] [2025-03-05T06:42:00.773Z] Checked if tokens are valid: true, expires at: 1741160397179
+[debug] [2025-03-05T06:42:00.773Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/operations/cp.6661753043259929737 [none]
+[debug] [2025-03-05T06:42:01.941Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/operations/cp.6661753043259929737 200
+[debug] [2025-03-05T06:42:01.942Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/operations/cp.6661753043259929737 {"name":"operations/cp.6661753043259929737"}
+[debug] [2025-03-05T06:42:02.454Z] [Project Creation Poller] Retrying task index 0
+[debug] [2025-03-05T06:42:02.455Z] Checked if tokens are valid: true, expires at: 1741160397179
+[debug] [2025-03-05T06:42:02.455Z] Checked if tokens are valid: true, expires at: 1741160397179
+[debug] [2025-03-05T06:42:02.455Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/operations/cp.6661753043259929737 [none]
+[debug] [2025-03-05T06:42:02.987Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/operations/cp.6661753043259929737 200
+[debug] [2025-03-05T06:42:02.987Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/operations/cp.6661753043259929737 {"name":"operations/cp.6661753043259929737","metadata":{"@type":"type.googleapis.com/google.cloudresourcemanager.v1.ProjectCreationStatus","gettable":true}}
+[debug] [2025-03-05T06:42:03.991Z] [Project Creation Poller] Retrying task index 0
+[debug] [2025-03-05T06:42:03.992Z] Checked if tokens are valid: true, expires at: 1741160397179
+[debug] [2025-03-05T06:42:03.992Z] Checked if tokens are valid: true, expires at: 1741160397179
+[debug] [2025-03-05T06:42:03.992Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/operations/cp.6661753043259929737 [none]
+[debug] [2025-03-05T06:42:04.583Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/operations/cp.6661753043259929737 200
+[debug] [2025-03-05T06:42:04.584Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/operations/cp.6661753043259929737 {"name":"operations/cp.6661753043259929737","metadata":{"@type":"type.googleapis.com/google.cloudresourcemanager.v1.ProjectCreationStatus","gettable":true,"ready":true},"done":true,"response":{"@type":"type.googleapis.com/google.cloudresourcemanager.v1.Project","projectNumber":"434883310918","projectId":"rag-web-client","lifecycleState":"ACTIVE","name":"rag-web-client","createTime":"2025-03-05T06:42:02.776656Z","parent":{"type":"organization","id":"841981408460"}}}
+[debug] [2025-03-05T06:42:04.586Z] Checked if tokens are valid: true, expires at: 1741160397179
+[debug] [2025-03-05T06:42:04.586Z] Checked if tokens are valid: true, expires at: 1741160397179
+[debug] [2025-03-05T06:42:04.586Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1beta1/projects/rag-web-client:addFirebase [none]
+[debug] [2025-03-05T06:42:05.864Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1beta1/projects/rag-web-client:addFirebase 403
+[debug] [2025-03-05T06:42:05.864Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1beta1/projects/rag-web-client:addFirebase {"error":{"code":403,"message":"The caller does not have permission","status":"PERMISSION_DENIED"}}
+[debug] [2025-03-05T06:42:05.865Z] Request to https://firebase.googleapis.com/v1beta1/projects/rag-web-client:addFirebase had HTTP Error: 403, The caller does not have permission
+[debug] [2025-03-05T06:42:06.034Z] FirebaseError: Request to https://firebase.googleapis.com/v1beta1/projects/rag-web-client:addFirebase had HTTP Error: 403, The caller does not have permission
+    at responseToError (C:\Users\RegenX-Dev\AppData\Roaming\npm\node_modules\firebase-tools\lib\responseToError.js:52:12)
+    at RetryOperation._fn (C:\Users\RegenX-Dev\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:312:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[error] 
+[error] Error: Failed to add Firebase to Google Cloud Platform project. See firebase-debug.log for more info.

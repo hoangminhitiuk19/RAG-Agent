@@ -1,0 +1,16 @@
+CACHE MANIFEST
+# Version 1.0.0 - Update this version number when files change
+
+CACHE:
+style.css
+script.js
+https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap
+https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css
+https://cdn.jsdelivr.net/npm/marked/marked.min.js
+https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2
+
+NETWORK:
+*
+
+FALLBACK:
+/ /offline.html
