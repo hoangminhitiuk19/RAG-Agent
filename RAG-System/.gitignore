@@ -102,3 +102,4 @@ clear-cache.bat
 /tests
 /node_modules
 /deploy
+*.txt

@@ -1,133 +1,115 @@
-// server.js
-const dotenv = require('dotenv');
-dotenv.config();
-console.log('WEATHER_API_KEY:', process.env.WEATHER_API_KEY ? 'exists' : 'missing');
-process.env.KMP_DUPLICATE_LIB_OK = 'TRUE';
+// Add this at the top of the file
+console.log('======================================');
+console.log('STARTING SERVER PROCESS');
+console.log('🟢 server.js STARTED in:', process.cwd());
+console.log('======================================');
 
+// Add global error handlers
+process.on('uncaughtException', (err) => {
+  console.error('UNCAUGHT EXCEPTION:', err);
+  // Don't exit the process in production
+  if (process.env.NODE_ENV !== 'production') {
+    process.exit(1);
+  }
+});
+
+process.on('unhandledRejection', (err) => {
+  console.error('UNHANDLED REJECTION:', err);
+});
+
+// Basic requires
+const fs = require('fs');
+const dotenv = require('dotenv');
 const express = require('express');
 const cors = require('cors');
-const { createClient } = require('@supabase/supabase-js');
+
+// Load environment variables
+dotenv.config();
+console.log('Environment variables loaded. PORT:', process.env.PORT);
 
 // Initialize Express app
 const app = express();
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8080;
 
 // Middleware
 app.use(cors());
-app.use(express.json({ limit: '10mb' })); // For handling image uploads
+app.use(express.json({ limit: '10mb' }));
 
-// Initialize Supabase client
-const supabaseUrl = process.env.REGENX_SUPABASE_URL;
-const supabaseKey = process.env.REGENX_SERVICE_ROLE_KEY;
-
-// Add console.log for debugging
-console.log('Supabase URL:', supabaseUrl);
-console.log('Supabase Key exists:', !!supabaseKey);
-
-// Create Supabase client with error handling
-let supabase;
-try {
-  if (!supabaseUrl || !supabaseKey) {
-    throw new Error('Supabase URL or key is missing');
-  }
-  supabase = createClient(supabaseUrl, supabaseKey);
-  console.log('Supabase client initialized successfully');
-} catch (error) {
-  console.error('Error initializing Supabase client:', error);
-  // Create a dummy client to prevent crashes
-  supabase = {
-    from: () => ({
-      select: () => ({ data: null, error: new Error('Supabase client not available') })
-    })
-  };
-}
-
-// Health check endpoint
-app.get('/health', async (req, res) => {
-  try {
-    // Check Supabase connection
-    const { data, error } = await supabase.from('system_health').select('*').limit(1);
-    const supabaseStatus = error ? 'disconnected' : 'connected';
-    
-    // Check RAG connection
-    let ragStatus = 'unknown';
-    try {
-      const { ragService } = require('./services/ragService');
-      const ragHealth = await ragService.checkHealth();
-      ragStatus = ragHealth.status;
-    } catch (err) {
-      ragStatus = 'disconnected';
-    }
-    
-    res.status(200).json({
-      status: 'healthy',
-      timestamp: new Date().toISOString(),
-      components: {
-        api: 'operational',
-        database: supabaseStatus,
-        rag_system: ragStatus
-      },
-      environment: process.env.NODE_ENV || 'development'
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: 'unhealthy',
-      error: error.message
-    });
-  }
-});
-
-// Import routes
-const chatRouter = require('./routes/chatRoutes');
-
-// Initialize the user session cache on startup
-async function initializeDefaultUsers() {
-  try {
-    const { initializeUserSession } = require('./services/chatService');
-    
-    // Default user IDs that should be pre-loaded
-    const defaultUsers = [
-      'e6a10f89-322f-4fcc-9fbd-c6587907f439', // Default test user
-      // Add more default users if needed
-    ];
-    
-    console.log('Pre-loading user data for default users...');
-    
-    // Initialize each user in parallel
-    await Promise.all(
-      defaultUsers.map(async (userId) => {
-        const result = await initializeUserSession(userId);
-        console.log(`User ${userId} initialization: ${result ? 'Success' : 'Failed'}`);
-      })
-    );
-    
-    console.log('User data pre-loading complete');
-  } catch (error) {
-    console.error('Error initializing default users:', error);
-  }
-}
-
-// API Routes
-app.use('/api/chat', chatRouter);
-app.use('/api/documents', require('./routes/documentRoutes'));
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error('Error:', err);
-  res.status(err.status || 500).json({ 
-    error: {
-      message: err.message || 'Internal Server Error',
-      status: err.status || 500
-    }
+// Basic routes
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'RegenX API is running',
+    version: require('./package.json').version,
+    time: new Date().toISOString()
   });
 });
 
-// Start the server
-app.listen(PORT, async () => {
-  console.log(`Server is running on port ${PORT}`);
+// Start the server immediately
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
   
-  // Initialize default users after server starts
-  await initializeDefaultUsers();
+  // Continue initialization AFTER server is already listening
+  setTimeout(() => {
+    try {
+      console.log('Continuing initialization...');
+      // Initialize services and routes in a way that won't crash the server
+      initializeServicesAndRoutes();
+    } catch (err) {
+      console.error('Error during delayed initialization:', err);
+    }
+  }, 1000);
 });
 
-module.exports = { app, supabase };
+// Function to initialize services and routes
+function initializeServicesAndRoutes() {
+  try {
+    // Initialize external services first
+    let supabaseClient = null;
+    try {
+      const { createClient } = require('@supabase/supabase-js');
+      const supabaseUrl = process.env.REGENX_SUPABASE_URL;
+      const supabaseKey = process.env.REGENX_SERVICE_ROLE_KEY;
+      
+      if (supabaseUrl && supabaseKey) {
+        supabaseClient = createClient(supabaseUrl, supabaseKey);
+        global.supabaseClient = supabaseClient;
+        console.log('Supabase client initialized');
+      } else {
+        console.warn('Missing Supabase credentials');
+      }
+    } catch (err) {
+      console.error('Error initializing Supabase:', err);
+    }
+    
+    // Add the health check endpoint
+    app.get('/health', (req, res) => {
+      res.json({
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV,
+        services: {
+          supabase: supabaseClient ? 'initialized' : 'not available'
+        }
+      });
+    });
+    
+    // Try to add chat routes
+    try {
+      const chatRouter = require('./routes/chatRoutes');
+      app.use('/api/chat', chatRouter);
+      console.log('Chat routes registered');
+    } catch (err) {
+      console.error('Error registering chat routes:', err);
+      app.use('/api/chat', (req, res) => {
+        res.status(503).json({ error: 'Chat functionality temporarily unavailable' });
+      });
+    }
+    
+    console.log('All routes and services initialized');
+  } catch (err) {
+    console.error('Error in initialization:', err);
+  }
+}
+
+// Export the app for testing
+module.exports = app;

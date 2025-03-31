@@ -9,7 +9,7 @@ const appState = {
     currentConversationId: null,
     conversations: [],
     currentImageUrl: null,
-    userId: null,
+    userProfileId: null,
     farmId: null
 };
 
@@ -68,13 +68,13 @@ export function findConversation(id) {
 }
 
 // User management
-export function setUserId(id) {
-    appState.userId = id;
-    return appState.userId;
+export function setUserProfileId(id) {
+    appState.userProfileId = id;
+    return appState.userProfileId;
 }
 
-export function getUserId() {
-    return appState.userId;
+export function getUserProfileId() {
+    return appState.userProfileId;
 }
 
 export function setFarmId(id) {

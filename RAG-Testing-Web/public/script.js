@@ -1,5 +1,5 @@
 // Application initialization and event binding
-import { API_URL, SUPABASE_URL, SUPABASE_ANON_KEY, DEFAULT_USER_ID, DEFAULT_FARM_ID, APP_VERSION } from '@src/config.js';
+import { API_URL, SUPABASE_URL, SUPABASE_ANON_KEY, DEFAULT_USER_PROFILE_ID, DEFAULT_FARM_ID, APP_VERSION } from '@src/config.js';
 import { setupDomElements } from '@src/utils/domUtils.js';
 import { setupEventListeners } from '@src/utils/eventUtils.js';
 import { sendMessage } from '@src/services/chatService.js';
@@ -13,7 +13,7 @@ import { addDevReloadButton } from '@src/utils/devUtils.js';
 import { setupDebugTools } from '@src/utils/debugUtils.js';
 import { createSupabaseClient, validateSupabaseClient } from '@src/utils/supabaseService.js';
 import { uploadImage } from '@src/services/imageService.js';
-import { setUserId, setFarmId, setConversations } from '@src/utils/state.js';
+import { setUserProfileId, setFarmId, setConversations } from '@src/utils/state.js';
 
 
 // Initialize the application
@@ -37,8 +37,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     // Get user ID and store in state
-    const userId = localStorage.getItem('currentUserId') || DEFAULT_USER_ID;
-    setUserId(userId);
+    const userProfileId = localStorage.getItem('currentUserProfileId') || DEFAULT_USER_PROFILE_ID;
+    setUserProfileId(userProfileId);
     setFarmId(DEFAULT_FARM_ID);
     
     // Set up initial conversations array in state

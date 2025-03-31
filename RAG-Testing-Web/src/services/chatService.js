@@ -2,14 +2,14 @@ import { addMessage } from '../utils/messageDisplayUtils.js';
 import { processStreamingResponse } from './streamService.js';
 import { translateToEnglish } from './translationService.js';
 import { updateStatus } from '../utils/statusUtils.js';
-import { getCurrentImageUrl, getConversationId, getUserId, getFarmId } from '../utils/state.js';
+import { getCurrentImageUrl, getConversationId, getUserProfileId, getFarmId } from '../utils/state.js';
 import { API_URL } from '../config.js';  // Add this import if it's missing
 
 export async function sendMessage({ messageInput, sendButton, typingIndicator, statusIndicator }) {
     // Get values from state
     const currentConversationId = getConversationId();
     const currentImageUrl = getCurrentImageUrl();
-    const userId = getUserId();
+    const userProfileId = getUserProfileId();
     const farmId = getFarmId();
     
     const messageText = messageInput.value.trim();
@@ -30,7 +30,7 @@ export async function sendMessage({ messageInput, sendButton, typingIndicator, s
         
         // Prepare request data
         const requestData = {
-            user_id: userId,
+            user_profile_id: userProfileId,
             farm_id: farmId,
             message: messageText,
             conversation_id: currentConversationId
@@ -43,9 +43,9 @@ export async function sendMessage({ messageInput, sendButton, typingIndicator, s
         }
         
         console.log('Sending message with data:', requestData);
-        
+        console.log('API URL:', API_URL);
         // Make API request with the correct endpoint
-        const response = await fetch(`${API_URL}/api/chat/message/stream`, {  // Updated path
+        const response = await fetch(`${API_URL}/api/chat/message/stream`, {  // Change to streaming endpoint
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestData)

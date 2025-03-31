@@ -1,5 +1,5 @@
 import { SUPABASE_URL } from '../config.js';
-import { setCurrentImageUrl, getCurrentImageUrl, getUserId } from '../utils/state.js';
+import { setCurrentImageUrl, getCurrentImageUrl, getUserProfileId } from '../utils/state.js';
 
 // Cache for image URLs
 const imageCache = new Map();
@@ -22,7 +22,7 @@ export async function handleImageUpload(event, supabase) {
 
 export async function uploadImage(file, supabase) {
     const imagePreview = document.getElementById('image-preview');
-    const userId = getUserId();
+    const userProfileId = getUserProfileId();
     
     // Show loading state
     imagePreview.innerHTML = '<div class="loading">Uploading...</div>';
@@ -34,7 +34,7 @@ export async function uploadImage(file, supabase) {
         const timestamp = Date.now();
         const randomString = Math.random().toString(36).substring(2, 10);
         const fileExtension = file.name.split('.').pop();
-        const fileName = `${userId}/${timestamp}-${randomString}.${fileExtension}`;
+        const fileName = `${userProfileId}/${timestamp}-${randomString}.${fileExtension}`;
 
         console.log('Generated filename:', fileName);
 

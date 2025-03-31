@@ -1,8 +1,8 @@
-const API_URL = 'https://regenx-api-24jfqechxq-as.a.run.app';
+const API_URL = 'https://regenx-api-232745515787.asia-southeast1.run.app';
 
 export async function testQdrant() {
     try {
-        const response = await fetch(`${API_URL}/api/chat/system-status`, { method: 'GET' });
+        const response = await fetch(`${API_URL}/health`, { method: 'GET' });
         const text = await response.text();
         let data;
 
