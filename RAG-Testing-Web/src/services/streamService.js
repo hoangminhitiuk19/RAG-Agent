@@ -3,6 +3,7 @@ import { saveConversation } from './conversationService.js';
 import { scrollToBottom } from '../utils/messageDisplayUtils.js';
 import { addMessage } from '../utils/messageDisplayUtils.js';
 import { finalizeMessage } from '../utils/messageUtils.js';
+import { setConversationId, getConversationId } from '../utils/state.js'; // Added import for state management
 
 let currentMessage = null;
 let currentMessageContent = null;
@@ -133,7 +134,7 @@ export async function processStreamingResponse(response, showTranslationNotice =
     const decoder = new TextDecoder('utf-8');
 
     let buffer = '', sources = [], followUpQuestions = [];
-    let currentConversationId = null;
+    let currentConversationId = getConversationId(); // Initialize with current ID from state
 
     try {
         currentMessage = currentMessageContent = null;
@@ -144,6 +145,15 @@ export async function processStreamingResponse(response, showTranslationNotice =
             translationNotice.className = 'translation-notice';
             translationNotice.innerHTML = '<i class="fas fa-language"></i> Query translated to English.';
             chatMessages.appendChild(translationNotice);
+        }
+
+        // Also check for conversation ID in response headers
+        const headerConversationId = response.headers?.get('X-Conversation-Id');
+        if (headerConversationId) {
+            currentConversationId = headerConversationId;
+            setConversationId(currentConversationId); // Update state
+            updateConversationId(currentConversationId); // Update UI
+            saveConversation(currentConversationId, false);
         }
 
         while (true) {
@@ -164,8 +174,17 @@ export async function processStreamingResponse(response, showTranslationNotice =
 
                         if (data.type === 'info' && data.conversation_id) {
                             currentConversationId = data.conversation_id;
-                            updateConversationId(currentConversationId);
+                            setConversationId(currentConversationId); // Update state
+                            updateConversationId(currentConversationId); // Update UI
                             saveConversation(currentConversationId, false);
+                            console.log('Conversation ID set to:', currentConversationId);
+                        } else if (data.conversation_id && !currentConversationId) {
+                            // Alternative format without type field
+                            currentConversationId = data.conversation_id;
+                            setConversationId(currentConversationId); // Update state
+                            updateConversationId(currentConversationId); // Update UI
+                            saveConversation(currentConversationId, false);
+                            console.log('Alternative format: Conversation ID set to:', currentConversationId);
                         } else if (data.clear_loading) {
                             document.querySelectorAll('.message-content .loading-text').forEach(el => el.remove());
                         } else if (data.text_chunk) {
@@ -176,7 +195,11 @@ export async function processStreamingResponse(response, showTranslationNotice =
                             followUpQuestions = data.follow_up_questions;
                         } else if (data.complete) {
                             finalizeMessage();
-                            saveConversation(currentConversationId, true, currentMessageRawText);
+                            if (currentConversationId) {
+                                saveConversation(currentConversationId, true, currentMessageRawText);
+                            } else {
+                                console.warn('No conversation ID available for completed message');
+                            }
 
                             if (sources.length > 0) appendSources(currentMessage, sources);
                             if (followUpQuestions.length > 0) appendFollowUpQuestions(currentMessage, followUpQuestions);
@@ -196,4 +219,5 @@ export async function processStreamingResponse(response, showTranslationNotice =
     }
 
     scrollToBottom();
+    return { conversationId: currentConversationId, messageContent: currentMessageRawText };
 }
