@@ -1,4 +1,4 @@
-const API_URL = 'https://regenx-api-232745515787.asia-southeast1.run.app';
+const API_URL = 'https://rag-system-test-232745515787.asia-southeast1.run.app';
 
 export async function testQdrant() {
     try {

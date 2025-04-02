@@ -2,7 +2,7 @@
 
 // API Configuration
 // export const API_URL = import.meta.env.VITE_API_URL || 'https://regenx-api-24jfqechxq-as.a.run.app';
-export const API_URL = import.meta.env.VITE_API_URL || 'https://regenx-api-232745515787.asia-southeast1.run.app';
+export const API_URL = import.meta.env.VITE_API_URL || 'https://rag-system-test-232745515787.asia-southeast1.run.app';
 // Supabase Configuration
 export const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://kgbfhcjzsujcrmjjavdm.supabase.co';
 export const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-default-supabase-anon-key';
