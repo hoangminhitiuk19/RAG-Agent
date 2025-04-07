@@ -1,5 +1,4 @@
-const API_URL = 'https://rag-system-test-232745515787.asia-southeast1.run.app';
-
+import { API_URL } from '../config.js';
 export async function testQdrant() {
     try {
         const response = await fetch(`${API_URL}/health`, { method: 'GET' });
