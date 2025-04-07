@@ -12,6 +12,31 @@ class VectorStore {
     });
     
     this.collections = config.collections;
+    this.embeddingModel = config.embeddingModel || "text-embedding-3-large";
+    
+    // Cache for collection existence checks
+    this._collectionCache = {};
+  }
+
+  /**
+   * Check if a collection exists in Qdrant
+   * @param {string} collectionName - The collection name to check
+   * @returns {Promise<boolean>} - Whether the collection exists
+   */
+  async collectionExists(collectionName) {
+    if (this._collectionCache[collectionName] !== undefined) {
+      return this._collectionCache[collectionName];
+    }
+    
+    try {
+      const collections = await this.client.getCollections();
+      const exists = collections.collections.some(c => c.name === collectionName);
+      this._collectionCache[collectionName] = exists;
+      return exists;
+    } catch (error) {
+      console.error(`Error checking if collection ${collectionName} exists:`, error);
+      return false;
+    }
   }
 
   /**
@@ -23,7 +48,15 @@ class VectorStore {
    */
   async query(collectionName, queryText, options = {}) {
     try {
-      const { limit = 5, scoreThreshold = 0.7 } = options;
+
+      // First check if the collection exists
+      const exists = await this.collectionExists(collectionName);
+      if (!exists) {
+        console.warn(`Collection ${collectionName} does not exist in Qdrant. Skipping query.`);
+        return [];
+      }
+
+      const { limit = 6, scoreThreshold = 0.0 } = options;
       
       // Get embeddings for the query text
       const embedding = await this._getEmbedding(queryText);
@@ -37,17 +70,20 @@ class VectorStore {
         score_threshold: scoreThreshold
       });
       
+      console.log(`Found ${searchResult.length} results in ${collectionName}`);
       // Format the results
       return searchResult.map(hit => ({
         content: hit.payload.text,
         metadata: {
           source: hit.payload.source || 'unknown',
           score: hit.score,
-          id: hit.id
+          id: hit.id,
+          collection: collectionName
         }
       }));
     } catch (error) {
-      console.error(`Error querying vector store: ${error.message}`);
+      console.error(`Error querying collection ${collectionName}:`, error);
+      console.error(`Query text: "${queryText.substring(0, 100)}..."`);
       return [];
     }
   }
@@ -61,7 +97,22 @@ class VectorStore {
    */
   async multiQuery(collectionNames, queryText, options = {}) {
     try {
-      const queryPromises = collectionNames.map(collection => 
+      // Filter out collections that don't exist
+      const existingCollections = [];
+      for (const collection of collectionNames) {
+        if (await this.collectionExists(collection)) {
+          existingCollections.push(collection);
+        } else {
+          console.warn(`Collection ${collection} does not exist. Skipping.`);
+        }
+      }
+      
+      if (existingCollections.length === 0) {
+        console.warn('No valid collections to query');
+        return [];
+      }
+      
+      const queryPromises = existingCollections.map(collection => 
         this.query(collection, queryText, options)
       );
       
@@ -87,10 +138,20 @@ class VectorStore {
    */
   async _getEmbedding(text) {
     try {
+      // Handle empty or invalid text
+      if (!text || typeof text !== 'string' || text.trim() === '') {
+        console.warn('Invalid or empty text for embedding generation');
+        throw new Error('Invalid text for embedding');
+      }
+      
       const response = await openai.embeddings.create({
-        model: "text-embedding-3-small",
+        model: this.embeddingModel,
         input: text
       });
+      
+      if (!response.data || !response.data[0] || !response.data[0].embedding) {
+        throw new Error('Invalid embedding response from OpenAI');
+      }
       
       return response.data[0].embedding;
     } catch (error) {

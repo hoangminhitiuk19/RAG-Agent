@@ -3,7 +3,9 @@ const {
   getFarmByFarmerId,
   getFarmCropsOfAFarm,
   getCropNameByCropId,
-  getFarmIssueHistory
+  getFarmIssueHistory,
+  getLocationString,
+  getLocationHierarchy
 } = require('../../services/farmService');
 const { weatherService } = require('../../services/weather');
 
@@ -39,27 +41,48 @@ class FarmContextAgent {
       const farm = farms.find(f => f.farm_id === farmId);
       if (!farm) return null;
 
+      // Get location details from admin_unit
+      let locationHierarchy = [];
+      let locationString = '';
+      if (farm.admin_unit_id_fk) {
+        locationHierarchy = await getLocationHierarchy(farm.admin_unit_id_fk);
+        locationString = await getLocationString(farm.admin_unit_id_fk);
+      }
+
       const crops = await getFarmCropsOfAFarm(farmId);
 
       let weather = null;
-      if (farm && (farm.city || farm.municipality)) {
-        const location = farm.city || farm.municipality;
-        try {
-          weather = await weatherService.getWeatherByCity(location);
-        } catch (weatherError) {
-          console.log('Weather data not available:', weatherError.message);
+      if (locationHierarchy.length > 0) {
+        // Find the most specific location (city/municipality) to use for weather
+        const city = locationHierarchy.find(unit => 
+          unit.admin_unit_type === 'City' || unit.admin_unit_type === 'Municipality'
+        );
+        
+        if (city) {
+          try {
+            weather = await weatherService.getWeatherByCity(city.name);
+          } catch (weatherError) {
+            console.log('Weather data not available:', weatherError.message);
+          }
         }
       }
 
       const issues = await getFarmIssueHistory(farmId);
 
+      // Enhance farm with location information
+      const enhancedFarm = {
+        ...farm,
+        locationString,
+        locationHierarchy
+      };
+
       const contextData = {
-        farm,
+        farm: enhancedFarm,
         crops,
         farmer,
         weather,
         issues,
-        farmData: farm,
+        farmData: enhancedFarm,
         cropData: crops,
         farmerData: farmer,
         weatherData: weather
@@ -141,11 +164,8 @@ class FarmContextAgent {
       summary += 'This is a farm';
     }
 
-    if (context.farm.city || context.farm.municipality || context.farm.province) {
-      const location = [context.farm.city, context.farm.municipality, context.farm.province]
-        .filter(Boolean)
-        .join(', ');
-      summary += ` in ${location}`;
+    if (context.farm.locationString) {
+      summary += ` in ${context.farm.locationString}`;
     }
 
     summary += '. ';

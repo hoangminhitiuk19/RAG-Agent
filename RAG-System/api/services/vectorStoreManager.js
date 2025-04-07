@@ -84,33 +84,36 @@ class VectorStoreManager {
    * @param {Object} options - Query options
    * @returns {Promise<Array>} - Combined query results
    */
-  async queryCollections(collections, query, options = {}) {
-    if (!collections || collections.length === 0) {
-      collections = ['general_file', 'unique_file']; // Default collections
-    }
-    
-    console.log(`Querying collections: ${collections.join(', ')}`);
-    
-    try {
-      const allResults = [];
-      
-      // Query each collection
-      for (const collection of collections) {
-        try {
-          const results = await this.vectorStore.query(collection, query, options.limit || 5);
-          allResults.push(...results);
-        } catch (error) {
-          console.warn(`Error querying collection ${collection}:`, error.message);
-        }
+    async queryCollections(collections, query, options = {}) {
+      if (!collections || collections.length === 0) {
+        collections = ['general_file', 'unique_file']; // Default collections
       }
       
-      // Sort by relevance score
-      return allResults.sort((a, b) => b.score - a.score);
-    } catch (error) {
-      console.error('Error in queryCollections:', error);
-      return [];
+      console.log(`Querying collections: ${collections.join(', ')}`);
+      
+      try {
+        const allResults = [];
+        
+        // Query each collection
+        for (const collection of collections) {
+          try {
+            const results = await this.defaultStore.query(collection, query, {
+              limit: options.limit || 6,
+              scoreThreshold: options.scoreThreshold || 0.0
+            });
+            allResults.push(...results);
+          } catch (error) {
+            console.warn(`Error querying collection ${collection}:`, error.message);
+          }
+        }
+        
+        // Sort by relevance score - FIX: access score from metadata
+        return allResults.sort((a, b) => b.metadata.score - a.metadata.score);
+      } catch (error) {
+        console.error('Error in queryCollections:', error);
+        return [];
+      }
     }
-  }
     /**
      * Query multiple knowledge bases
      */
@@ -120,6 +123,7 @@ class VectorStoreManager {
       
       // Map knowledge bases to their stores and collections
       for (const kb of kbNames) {
+        console.log(`Executing multiQuery with knowledge bases: ${kbNames.join(', ')}`);
         const mapping = this.kbMapping[kb];
         if (!mapping) {
           console.warn(`Unknown knowledge base: ${kb}, skipping`);
@@ -142,7 +146,7 @@ class VectorStoreManager {
         // If we're querying multiple collections in the same store,
         // we can use that store's multiQuery for efficiency
         if (collections.length > 1) {
-          const results = await store.query(collections[0], queryText, options);
+          const results = await store.multiQuery(collections, queryText, options);
           allResults.push(...results);
         } else {
           // Get results for each collection

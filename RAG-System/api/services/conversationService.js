@@ -235,6 +235,32 @@ class ConversationService {
   }
   
   /**
+   * Check if a conversation exists
+   * @param {string} chatId - The conversation ID to check
+   * @returns {Promise<boolean>} - True if conversation exists, false otherwise
+   */
+  async conversationExists(chatId) {
+    try {
+      if (!chatId) return false;
+      
+      const { data, error } = await supabase
+        .from('chat_sessions')
+        .select('chat_id')
+        .eq('chat_id', chatId)
+        .single();
+        
+      if (error) {
+        console.error('Error checking conversation existence:', error);
+        return false;
+      }
+      
+      return !!data;
+    } catch (error) {
+      console.error('Error in conversationExists:', error);
+      return false;
+    }
+  }
+  /**
    * Store a message in the conversation history
    * @param {Object} params - Message parameters
    * @returns {Object} - Stored message data

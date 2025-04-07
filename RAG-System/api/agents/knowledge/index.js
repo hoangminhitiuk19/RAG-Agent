@@ -1,4 +1,4 @@
-const { OpenAI } = require("openai");
+const { openai } = require('../../services/openai');
 const vectorStoreManager = require("../../services/vectorStoreManager");
 
 /**
@@ -6,90 +6,141 @@ const vectorStoreManager = require("../../services/vectorStoreManager");
  */
 class KnowledgeAgent {
   constructor() {
-    this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
+    this.modelName = "gpt-4o"; // Add the model name property
     this.vectorStoreManager = vectorStoreManager;
   }
 
-    /**
+  /**
+   * Generate a streaming response using a pre-built system prompt
+   */
+  async generateResponseWithPrompt({ message, systemPrompt, stream = false }) {
+    try {
+      const messages = [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: message }
+      ];
+      
+      const response = await openai.chat.completions.create({
+        model: this.modelName,
+        messages: messages,
+        temperature: 0.3,
+        stream: stream
+      });
+      
+      return response;
+    } catch (error) {
+      console.error("Error generating response with prompt:", error);
+      throw error;
+    }
+  }
+  /**
    * Generate a response using RAG
    * @param {Object} options - Options for response generation
    * @returns {Object|Stream} - Response or stream
    */
-    async generateResponse({
-      message,
-      conversationHistory = [],
-      retrievalResults = [],
-      farmContext = null,
-      weatherData = null,
-      functionResults = {},
-      stream = false
-    }) {
-      try {
-        // Create messages array for OpenAI
-        const messages = [
-          {
-            role: "system",
-            content: this.buildSystemPrompt(farmContext, weatherData)
-          }
-        ];
-        
-        // Add context from retrieved documents if available
-        if (retrievalResults && retrievalResults.length > 0) {
-          const contextText = retrievalResults
-            .map(doc => doc.content || doc.text || '')
-            .filter(text => text.trim().length > 0)
-            .join("\n\n");
-            
-          if (contextText.trim().length > 0) {
-            messages.push({
-              role: "system",
-              content: `Relevant information:\n${contextText}`
-            });
-          }
+  async generateResponse({
+    message,
+    conversationHistory = [],
+    conversationState = null, // New parameter
+    contextSummary = null,    // New parameter
+    retrievalResults = [],
+    farmContext = null,
+    weatherData = null,
+    imageAnalysisResult = null,
+    functionResults = {},
+    agricultureAnalysis = null,
+    stream = false
+  }) {
+    try {
+      // Create messages array for OpenAI
+      const messages = [
+        {
+          role: "system",
+          content: this.buildSystemPrompt(farmContext, weatherData)
         }
-        
-        // Add conversation history
-        if (conversationHistory && conversationHistory.length > 0) {
-          // Add up to 5 most recent messages for context
-          const recentHistory = conversationHistory.slice(-5);
-          recentHistory.forEach(msg => {
-            if (msg.role && msg.content) {
-              messages.push({
-                role: msg.role,
-                content: msg.content
-              });
-            }
+      ];
+      
+      // Add context from retrieved documents if available
+      if (retrievalResults && retrievalResults.length > 0) {
+        const contextText = retrievalResults
+          .map(doc => doc.content || doc.text || '')
+          .filter(text => text.trim().length > 0)
+          .join("\n\n");
+          
+        if (contextText.trim().length > 0) {
+          messages.push({
+            role: "system",
+            content: `Relevant information:\n${contextText}`
           });
         }
-        
-        // Add the current user message
+      }
+      
+      // Add conversation context summary if available (NEW)
+      if (conversationState && conversationState.state === 'CONTINUATION' && 
+          contextSummary && contextSummary.summary) {
         messages.push({
-          role: "user",
-          content: message
+          role: "system",
+          content: `Previous conversation context: ${contextSummary.summary}`
         });
         
-        // Call OpenAI with or without streaming
-        if (stream) {
-          return this.openai.chat.completions.create({
-            model: "gpt-4o",
-            messages: messages,
-            stream: true
+        // Add key entities if available
+        if (contextSummary.entities && contextSummary.entities.length > 0) {
+          messages.push({
+            role: "system",
+            content: `Key entities from previous conversation: ${contextSummary.entities.join(', ')}`
           });
-        } else {
-          const response = await this.openai.chat.completions.create({
-            model: "gpt-4o", 
-            messages: messages
-          });
-          
-          return response.choices[0].message.content;
         }
-      } catch (error) {
-        console.error("Error generating RAG response:", error);
-        throw error;
       }
+      
+      // Add image analysis if available
+      if (imageAnalysisResult) {
+        messages.push({
+          role: "system",
+          content: `Image analysis: ${imageAnalysisResult.analysis}`
+        });
+      }
+      
+      // Add conversation history
+      if (conversationHistory && conversationHistory.length > 0) {
+        // Add up to 5 most recent messages for context
+        const recentHistory = conversationHistory.slice(-5);
+        recentHistory.forEach(msg => {
+          if (msg.role && msg.content) {
+            messages.push({
+              role: msg.role,
+              content: msg.content
+            });
+          }
+        });
+      }
+      
+      // Add the current user message
+      messages.push({
+        role: "user",
+        content: message
+      });
+      
+      // Call OpenAI with or without streaming
+      if (stream) {
+        return openai.chat.completions.create({
+          model: this.modelName,
+          messages: messages,
+          stream: true
+        });
+      } else {
+        const response = await openai.chat.completions.create({
+          model: this.modelName, 
+          messages: messages
+        });
+        
+        return response.choices[0].message.content;
+      }
+      
+    } catch (error) {
+      console.error("Error generating RAG response:", error);
+      throw error;
     }
+  }
   
   /**
    * Extract and format sources from retrieval results
@@ -125,10 +176,10 @@ class KnowledgeAgent {
    * @param {Object} weatherData - Weather data
    * @returns {string} - System prompt
    */
-  buildSystemPrompt(farmContext, weatherData) {
+  buildSystemPrompt(farmContext, weatherData, agricultureAnalysis) {
     let prompt = `You are an agricultural assistant specializing in coffee farming. 
-Provide practical advice and solutions for coffee farmers based on their specific context and needs.
-Focus on sustainable practices, disease prevention, and yield optimization.`;
+                Provide practical advice and solutions for coffee farmers based on their specific context and needs.
+                Focus on sustainable practices, disease prevention, and yield optimization.`;
 
     // Add farm context if available
     if (farmContext) {
@@ -150,19 +201,33 @@ Focus on sustainable practices, disease prevention, and yield optimization.`;
     // Add weather context if available
     if (weatherData) {
       prompt += `\n\nCurrent weather conditions:
-Temperature: ${weatherData.temperature}°C
-Humidity: ${weatherData.humidity}%
-Condition: ${weatherData.condition}
-Wind speed: ${weatherData.wind?.speed || 'unknown'} m/s`;
+                    Temperature: ${weatherData.temperature}°C
+                    Humidity: ${weatherData.humidity}%
+                    Condition: ${weatherData.condition}
+                    Wind speed: ${weatherData.wind?.speed || 'unknown'} m/s`;
+    }
+
+    if (agricultureAnalysis) {
+      prompt += `\n\nTopic Analysis:`;
+      prompt += `\nPrimary Topic: ${agricultureAnalysis.primaryTopic}`;
+      
+      if (agricultureAnalysis.detectedCrops && agricultureAnalysis.detectedCrops.length > 0) {
+        prompt += `\nDetected Crops: ${agricultureAnalysis.detectedCrops.map(crop => 
+          `${crop.name} (${crop.taxonomy || 'no taxonomy'})`).join(', ')}`;
+      }
+      
+      if (agricultureAnalysis.conditions && agricultureAnalysis.conditions.length > 0) {
+        prompt += `\nMentioned Conditions: ${agricultureAnalysis.conditions.join(', ')}`;
+      }
     }
     
     prompt += `\n\nREQUIREMENTS:
-1. Provide specific, actionable advice tailored to the farmer's context
-2. When discussing plant health issues, include symptoms, causes, prevention, and treatment
-3. Consider local weather conditions in your recommendations
-4. Explain concepts in simple language but include technical terms where appropriate
-5. Always recommend sustainable practices and integrated pest management when possible
-6. Format your response in clear sections using markdown`;
+              1. Provide specific, actionable advice tailored to the farmer's context
+              2. When discussing plant health issues, include symptoms, causes, prevention, and treatment
+              3. Consider local weather conditions in your recommendations
+              4. Explain concepts in simple language but include technical terms where appropriate
+              5. Always recommend sustainable practices and integrated pest management when possible
+              6. Format your response in clear sections using markdown`;
 
     return prompt;
   }
@@ -190,20 +255,20 @@ Wind speed: ${weatherData.wind?.speed || 'unknown'} m/s`;
    */
   _getSystemPrompt() {
     return `You are an agricultural assistant specialized in helping farmers with their crops, particularly coffee. 
-Your goal is to provide accurate, helpful information based on agricultural best practices.
+            Your goal is to provide accurate, helpful information based on agricultural best practices.
 
-When responding to user questions:
-1. Base your answers on the retrieved agricultural information provided
-2. If specific farm context is provided, tailor your advice to that farm's situation
-3. When plant diseases are discussed, provide accurate identification and treatment options
-4. If weather information is available, incorporate it into your advice
-5. Always be honest about what you know and don't know
-6. Cite your sources when providing specific information
-7. Avoid generic advice when specific information is available
-8. If you need more information to give good advice, ask clarifying questions
-9. When images are provided with analysis, reference the analysis in your response
+            When responding to user questions:
+            1. Base your answers on the retrieved agricultural information provided
+            2. If specific farm context is provided, tailor your advice to that farm's situation
+            3. When plant diseases are discussed, provide accurate identification and treatment options
+            4. If weather information is available, incorporate it into your advice
+            5. Always be honest about what you know and don't know
+            6. Cite your sources when providing specific information
+            7. Avoid generic advice when specific information is available
+            8. If you need more information to give good advice, ask clarifying questions
+            9. When images are provided with analysis, reference the analysis in your response
 
-All advice should be practical, sustainable, and consider the farmer's context.`;
+            All advice should be practical, sustainable, and consider the farmer's context.`;
   }
   
   /**

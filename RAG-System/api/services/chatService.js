@@ -73,6 +73,7 @@ async function processMessage({ user_profile_id, farm_id, message, conversation_
       ? await conversationService.getConversationHistory(conversation_id, { formatForOpenAI: true })
       : [];
     const responseText = await orchestrator.process({
+      conversation_id,
       message,
       userProfileId: user_profile_id,
       farmId: farm_id,
@@ -111,6 +112,7 @@ async function processMessageStreaming({
       : [];
 
     const response = await orchestrator.streamProcess({
+      conversation_id,
       message,
       userProfileId: user_profile_id,
       farmId: farm_id,
@@ -119,7 +121,11 @@ async function processMessageStreaming({
       res
     });
 
-    return response;
+    return {
+      response,
+      conversation_id
+    };
+
   } catch (error) {
     console.error('Error in processMessageStreaming:', error);
     res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);

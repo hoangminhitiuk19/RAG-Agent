@@ -5,6 +5,73 @@ const { supabase } = require('../config/db');
 if (!process.env.REGENX_SUPABASE_URL) {
   dotenv.config();
 }
+
+
+/**
+ * Get admin unit details by admin_unit_id
+ */
+async function getAdminUnitById(adminUnitId) {
+  try {
+    const { data, error } = await supabase
+      .from('admin_unit')
+      .select('admin_unit_id, name, name_local, admin_unit_type, parent_id_fk')
+      .eq('admin_unit_id', adminUnitId)
+      .single();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error fetching admin unit by id:', error);
+    return null;
+  }
+}
+
+/**
+ * Get location hierarchy for an admin unit (traverses parent relationships)
+ */
+async function getLocationHierarchy(adminUnitId) {
+  if (!adminUnitId) return [];
+  
+  try {
+    const units = [];
+    let currentId = adminUnitId;
+    
+    // Prevent infinite loops with a reasonable limit
+    for (let i = 0; i < 10; i++) {
+      if (!currentId) break;
+      
+      const unit = await getAdminUnitById(currentId);
+      if (!unit) break;
+      
+      units.unshift(unit); // Add to beginning of array (build from country down)
+      currentId = unit.parent_id_fk;
+    }
+    
+    return units;
+  } catch (error) {
+    console.error('Error fetching location hierarchy:', error);
+    return [];
+  }
+}
+
+/**
+ * Get location string from admin_unit_id (e.g. "Ho Chi Minh City, Vietnam")
+ */
+async function getLocationString(adminUnitId) {
+  try {
+    const hierarchy = await getLocationHierarchy(adminUnitId);
+    if (hierarchy.length === 0) return '';
+    
+    return hierarchy
+      .map(unit => unit.name || unit.name_local)
+      .filter(Boolean)
+      .join(', ');
+  } catch (error) {
+    console.error('Error creating location string:', error);
+    return '';
+  }
+}
+
 /**
  * Get farmer by user_profile_id
  */
@@ -31,7 +98,7 @@ async function getFarmByFarmerId(farmerId) {
   try {
     const { data, error } = await supabase
       .from('farm')
-      .select('farm_id, coordinates, country, municipality, province, city, district, commune')
+      .select('farm_id, coordinates, admin_unit_id_fk')
       .eq('farmer_id_fk', farmerId);
 
     if (error) throw error;
@@ -57,10 +124,12 @@ async function getFarmCropsOfAFarm(farmId) {
     const currentYear = new Date().getFullYear();
 
     const enriched = await Promise.all(farmCrops.map(async (entry) => {
-      const crop = await getCropNameByCropId(entry.crop_id_fk);
-      const name = crop?.name || 'Unknown Crop';
-      const varietal = crop?.varietal || '';
-      const full_crop_name = varietal ? `${name} ${varietal}` : name;
+      const cropInfo = await getCropNameByCropId(entry.crop_id_fk);
+      
+      // Set defaults in case crop info is missing
+      const name = cropInfo?.name || 'Unknown Crop';
+      const varietal = cropInfo?.varietal || '';
+      const full_crop_name = cropInfo?.full_crop_name || name;
 
       const age = entry.planted_year ? (currentYear - entry.planted_year) : 0;
 
@@ -82,7 +151,6 @@ async function getFarmCropsOfAFarm(farmId) {
   }
 }
 
-
 /**
  * Get crop name and varietal by crop_id
  */
@@ -90,11 +158,37 @@ async function getCropNameByCropId(cropId) {
   try {
     const { data, error } = await supabase
       .from('crop')
-      .select('name, varietal')
+      .select('crop_id, varietal, crop_species_id_fk')
       .eq('crop_id', cropId)
       .single();
 
     if (error) throw error;
+    
+    if (data && data.crop_species_id_fk) {
+      // Get species information
+      const { data: speciesData, error: speciesError } = await supabase
+        .from('crop_species')
+        .select('common_name, scientific_name')
+        .eq('crop_species_id', data.crop_species_id_fk)
+        .single();
+        
+      if (speciesError) throw speciesError;
+      
+      if (speciesData) {
+        // Construct full crop name based on the new logic
+        const fullName = data.varietal 
+          ? `${speciesData.common_name} ${data.varietal}` 
+          : speciesData.common_name;
+          
+        return {
+          ...data,
+          name: speciesData.common_name,
+          scientific_name: speciesData.scientific_name,
+          full_crop_name: fullName
+        };
+      }
+    }
+    
     return data;
   } catch (error) {
     console.error('Error fetching crop by crop_id:', error);
@@ -291,5 +385,8 @@ module.exports = {
   storeIssueDetail,
   getFarmIssueHistory,
   getEnrichedUserContext,
-  createContextSummary
+  createContextSummary,
+  getAdminUnitById,
+  getLocationHierarchy,
+  getLocationString
 };
