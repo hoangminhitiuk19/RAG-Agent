@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <!-- Force no caching - very aggressive cache prevention -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <!-- Add a dynamic timestamp to prevent browser caching -->
+    <meta name="generated" content="<%= Date.now() %>">
+    <title>RegenX Farming Assistant</title> 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script type="module" crossorigin src="/assets/index-D9-oagnO.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-CKd6F2wX.css">
+</head> 
+<body> 
+    <div class="app-container"> 
+        <!-- Header with logo and conversation ID --> 
+        <header class="app-header">
+            <div class="logo-container">
+                <div class="company-logo" id="company-logo">
+                    <img src="/assets/company-logo-B_Y-Z-m5.png" alt="Company Logo">
+                </div>
+                <div class="divider"></div>
+                <div class="logo">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <h1 class="app-title">RegenX Farming Assistant</h1>
+            </div>
+            <div class="conversation-info">
+                <span id="status-indicator" class="status-indicator online" title="Connected"></span>
+                <span id="conversation-id" class="conversation-id">New conversation</span>
+            </div>
+        </header>
+
+        <!-- Main chat interface -->
+        <main class="chat-interface">
+            <!-- Chat messages container -->
+            <div class="chat-messages" id="chat-messages">
+                <!-- Welcome message -->
+                <div class="message agent-message">
+                    <div class="message-avatar"><i class="fas fa-leaf"></i></div>
+                    <div class="message-content">
+                        <p>Hello! I'm your Farming Assistant. How can I help you today?</p>
+                    </div>
+                    <div class="message-time">Just now</div>
+                </div>
+            </div>
+
+            <!-- Typing indicator (initially hidden) -->
+            <div class="typing-indicator hidden" id="typing-indicator">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+            
+            <!-- Chat interface input section -->
+            <div class="input-container">
+                <div id="image-preview" class="image-preview"></div>
+                
+                <div class="input-actions">
+                    <textarea id="message-input" class="message-input" placeholder="Type your message..." rows="1"></textarea>
+                    
+                    <div class="input-buttons">
+                        <label for="image-upload" class="upload-button" title="Upload an image">
+                            <i class="fas fa-image"></i>
+                        </label>
+                        <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                        
+                        <button id="send-button" class="send-button" disabled>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Conversation history sidebar (initially hidden on mobile) -->
+        <aside class="history-sidebar">
+            <div class="sidebar-header">
+                <h2>Conversation History</h2>
+                <button id="new-chat-button" class="new-chat-button">
+                    <i class="fas fa-plus"></i> New Chat
+                </button>
+            </div>
+            <div class="conversation-list" id="conversation-list">
+                <!-- Conversation history items will be added here -->
+                <div class="conversation-item active">
+                    <div class="conversation-title">New Conversation</div>
+                    <div class="conversation-time">Just now</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+    <!-- Add a clear cache button for manual clearing -->
+    <button id="clearCacheBtn" style="position: fixed; bottom: 10px; right: 10px; z-index: 9999; background: #f44336; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">
+        Clear Cache
+    </button>
+    <script>
+        // Replace placeholder with actual timestamp
+        document.addEventListener('DOMContentLoaded', () => {
+            const scripts = document.querySelectorAll('script[src*="_TIMESTAMP_"]');
+            scripts.forEach(script => {
+                const newSrc = script.src.replace('_TIMESTAMP_', Date.now());
+                const newScript = document.createElement('script');
+                newScript.type = script.type;
+                newScript.src = newSrc;
+                script.parentNode.replaceChild(newScript, script);
+            });
+        });
+    </script>
+    <!-- Load script with a dynamic parameter to prevent caching -->
+    
+    <!-- Add manual cache clearing -->
+    <script>
+        document.getElementById('clearCacheBtn').addEventListener('click', () => {
+            // Clear all storage
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            // Clear cache API if available
+            if ('caches' in window) {
+                caches.keys().then(cacheNames => {
+                    cacheNames.forEach(cacheName => {
+                        caches.delete(cacheName);
+                    });
+                });
+            }
+            
+            // Reload the page with a cache-busting parameter
+            window.location.href = window.location.pathname + '?cache_bust=' + Date.now();
+        });
+    </script>
+    <!-- Environment variables setup -->
+    <script>
+        // Set up environment variables safely
+        window.__env = window.__env || {};
+        
+        // Try to load from .env.local if we're in development
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            fetch('.env.local')
+                .then(response => response.text())
+                .then(text => {
+                    const lines = text.split('\n');
+                    lines.forEach(line => {
+                        const parts = line.split('=');
+                        if (parts.length === 2) {
+                            const key = parts[0].trim();
+                            const value = parts[1].trim();
+                            window.__env[key] = value;
+                        }
+                    });
+                    console.log('Environment variables loaded from .env.local');
+                })
+                .catch(err => console.warn('No .env.local file found or could not load it:', err));
+        }
+    </script>
+    
+    <!-- Required libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- Main application script -->
+
+    <!-- Debug panel (hidden by default) -->
+    <div id="debug-panel" style="position: fixed; bottom: 10px; right: 10px; z-index: 1000; display: none;">
+        <div style="background-color: rgba(0, 0, 0, 0.7); padding: 10px; border-radius: 8px; color: white;">
+            <div style="font-weight: bold; margin-bottom: 5px;">Debug Tools</div>
+            <button id="inspect-context-btn" style="margin: 3px; padding: 5px;">Inspect Context</button>
+            <button id="test-agent-btn" style="margin: 3px; padding: 5px;">Test Agent Response</button>
+            <button id="test-system-btn" style="margin: 3px; padding: 5px;">Test System Status</button>
+            <button id="close-debug-btn" style="margin: 3px; padding: 5px;">Close</button>
+        </div>
+    </div>
+    
+    <!-- Debug panel setup -->
+    <script>
+        // Debug panel setup
+        window.setupDebugPanel = function() {
+            const debugPanel = document.getElementById('debug-panel');
+            if (!debugPanel) return;
+            
+            // Enable debug mode with keyboard shortcut (Ctrl+Shift+D)
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+                    debugPanel.style.display = debugPanel.style.display === 'none' ? 'block' : 'none';
+                    console.log('Debug panel toggled:', debugPanel.style.display);
+                }
+            });
+            
+            // Setup button handlers with safety checks
+            document.getElementById('inspect-context-btn')?.addEventListener('click', function() {
+                if (typeof window.inspectEnrichedContext === 'function') {
+                    window.inspectEnrichedContext();
+                } else {
+                    console.error('inspectEnrichedContext function not available');
+                    alert('Debug function not available. Please check the console for errors.');
+                }
+            });
+            
+            document.getElementById('test-agent-btn')?.addEventListener('click', function() {
+                if (typeof window.testContextInAgentResponse === 'function') {
+                    window.testContextInAgentResponse();
+                } else {
+                    console.error('testContextInAgentResponse function not available');
+                    alert('Debug function not available. Please check the console for errors.');
+                }
+            });
+            
+            document.getElementById('test-system-btn')?.addEventListener('click', function() {
+                if (typeof window.testQdrant === 'function') {
+                    window.testQdrant();
+                } else {
+                    console.error('testQdrant function not available');
+                    alert('Debug function not available. Please check the console for errors.');
+                }
+            });
+            
+            document.getElementById('close-debug-btn')?.addEventListener('click', function() {
+                debugPanel.style.display = 'none';
+            });
+        };
+        
+        // Call setup after a short delay
+        setTimeout(window.setupDebugPanel, 1000);
+        
+        // Development mode helpers
+        const isDevMode = window.location.hostname === 'localhost' || 
+                          window.location.hostname === '127.0.0.1' ||
+                          window.location.hostname.includes('.local');
+                         
+        if (isDevMode) {
+            console.log('Development mode: Adding cache busting');
+            window.DEV_MODE = true;
+            
+            // Add cache busting for development
+            document.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
+                if (!link.href.includes('cdnjs') && !link.href.includes('fonts.googleapis')) {
+                    link.href = link.href.split('?')[0] + '?v=' + new Date().getTime();
+                }
+            });
+            
+            document.querySelectorAll('script[src]').forEach(script => {
+                if (script.src && !script.src.includes('cdn')) {
+                    script.src = script.src.split('?')[0] + '?v=' + new Date().getTime();
+                }
+            });
+        }
+    </script>
+</body>
+</html>

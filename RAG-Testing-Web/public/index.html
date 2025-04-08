@@ -3,9 +3,12 @@
 <head> 
     <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <!-- Force no caching - very aggressive cache prevention -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    <!-- Add a dynamic timestamp to prevent browser caching -->
+    <meta name="generated" content="<%= Date.now() %>">
     <title>RegenX Farming Assistant</title> 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet"> 
     <link rel="stylesheet" href="style.css">
@@ -91,7 +94,46 @@
             </div>
         </aside>
     </div>
-
+    <!-- Add a clear cache button for manual clearing -->
+    <button id="clearCacheBtn" style="position: fixed; bottom: 10px; right: 10px; z-index: 9999; background: #f44336; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">
+        Clear Cache
+    </button>
+    <script>
+        // Replace placeholder with actual timestamp
+        document.addEventListener('DOMContentLoaded', () => {
+            const scripts = document.querySelectorAll('script[src*="_TIMESTAMP_"]');
+            scripts.forEach(script => {
+                const newSrc = script.src.replace('_TIMESTAMP_', Date.now());
+                const newScript = document.createElement('script');
+                newScript.type = script.type;
+                newScript.src = newSrc;
+                script.parentNode.replaceChild(newScript, script);
+            });
+        });
+    </script>
+    <!-- Load script with a dynamic parameter to prevent caching -->
+    <script type="module" src="script.js?v=_TIMESTAMP_"></script>
+    
+    <!-- Add manual cache clearing -->
+    <script>
+        document.getElementById('clearCacheBtn').addEventListener('click', () => {
+            // Clear all storage
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            // Clear cache API if available
+            if ('caches' in window) {
+                caches.keys().then(cacheNames => {
+                    cacheNames.forEach(cacheName => {
+                        caches.delete(cacheName);
+                    });
+                });
+            }
+            
+            // Reload the page with a cache-busting parameter
+            window.location.href = window.location.pathname + '?cache_bust=' + Date.now();
+        });
+    </script>
     <!-- Environment variables setup -->
     <script>
         // Set up environment variables safely

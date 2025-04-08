@@ -7,7 +7,7 @@ import { startNewConversation, updateConversationId, updateActiveConversation } 
 import { loadConversations } from '@src/services/conversationService.js';
 import { checkApiHealth } from '@src/services/apiHealthService.js';
 import { initializeUserData } from '@src/services/userService.js';
-import { preventCaching } from '@src/utils/cacheUtils.js';
+import { preventCaching, clearAllCaches } from '@src/utils/cacheUtils.js';
 import { addTranslationNoticeStyles } from '@src/utils/uiEnhancements.js';
 import { addDevReloadButton } from '@src/utils/devUtils.js';
 import { setupDebugTools } from '@src/utils/debugUtils.js';
@@ -19,9 +19,13 @@ import { setUserProfileId, setFarmId, setConversations } from '@src/utils/state.
 // Initialize the application
 document.addEventListener('DOMContentLoaded', async () => {
     console.log(`Starting app version: ${APP_VERSION}`);
+    console.log('Page load timestamp:', Date.now());
     
     // Get DOM elements
     const domElements = setupDomElements();
+    
+    // Clear all caches forcefully on startup
+    await clearAllCaches();
     
     // Initialize utilities
     preventCaching();
@@ -41,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setUserProfileId(userProfileId);
     setFarmId(DEFAULT_FARM_ID);
     
-    // Set up initial conversations array in state
+    // Set up initial conversations array in state - cleared on each load
     setConversations([]);
     
     // Setup event handlers
@@ -54,8 +58,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         (file) => uploadImage(file, supabase)
     );
     
-    // Load stored conversations
-    loadConversations();
+    // Load stored conversations - EXPLICITLY DISABLED to prevent caching issues
+    // We never load old conversations - this ensures a fresh start every time
+    // loadConversations();
     
     // Initialize user data
     await initializeUserData();
@@ -69,4 +74,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         API_URL,
         domElements.chatMessages
     );
+    
+    // Add a startup message to console for debugging
+    console.log('Application initialization complete with cache clearing');
 });
