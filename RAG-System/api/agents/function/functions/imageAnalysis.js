@@ -8,7 +8,17 @@ async function analyzeImage(params) {
   const { imageUrl, query = "What can you see in this image? Does this plant have any diseases or pests?" } = params;
   
   if (!imageUrl) {
-    throw new Error('Image URL is required');
+    console.log('Image URL not provided, skipping image analysis');
+    return { 
+      analysis: "No image provided for analysis",
+      detectedIssues: {
+        diseases: [],
+        pests: [],
+        deficiencies: [],
+        other: []
+      },
+      success: false
+    };
   }
   
   try {

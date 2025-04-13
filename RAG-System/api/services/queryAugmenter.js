@@ -13,9 +13,9 @@ class QueryAugmenter {
    * @param {Object} agricultureAnalysis - Agricultural topic and crop analysis
    * @returns {Promise<Object>} - Augmented query information
    */
-  async augmentQuery(query, contextSummary = null, intentClassification = null, agricultureAnalysis = null) {
+  async augmentQuery(query, contextSummary = null, intentClassification = null, agricultureAnalysis = null, topicSpecificData = null) {
     // Build the contextual information
-    const context = this.buildContextObject(contextSummary, intentClassification, agricultureAnalysis);
+    const context = this.buildContextObject(contextSummary, intentClassification, agricultureAnalysis, topicSpecificData);
     
     return this.generateAugmentedQuery(query, context);
   }
@@ -24,7 +24,7 @@ class QueryAugmenter {
    * Build a context object from available analysis results
    * @private
    */
-  buildContextObject(contextSummary, intentClassification, agricultureAnalysis) {
+  buildContextObject(contextSummary, intentClassification, agricultureAnalysis, topicSpecificData) {
     const context = {};
     
     if (contextSummary && contextSummary.relevance > 0.3) {
@@ -49,6 +49,9 @@ class QueryAugmenter {
         conditions: agricultureAnalysis.conditions
       };
     }
+    if (topicSpecificData) {
+      context.topicData = topicSpecificData;
+    }
     
     return context;
   }
@@ -62,29 +65,30 @@ class QueryAugmenter {
   async generateAugmentedQuery(originalQuery, context) {
     try {
       const systemPrompt = `
-        You are a specialized query expansion system for an agricultural retrieval system focused on coffee farming.
-        
-        Your task is to enhance the original query with relevant coffee farming terminology to improve retrieval results.
-        
-        Guidelines:
-        1. Expand the query with specific agricultural terms, focusing on the detected crops, diseases, or farming practices
-        2. Include scientific names (taxonomies) when available
-        3. Add synonyms and related terms that would help with retrieval
-        4. Consider farming context like soil conditions, climate, etc.
-        5. Keep the augmented query concise but comprehensive
-        6. Preserve the original meaning and intent of the query
-        7. For pest/disease queries, include symptoms, causes, and treatments
-        8. For farming practices, include terminology for various approaches
-        
-        Return a JSON object with:
-        - augmentedQuery: An enhanced version of the original query
-        - expansionTerms: An array of specific terms that were added
-        - rationale: Brief explanation of the expansion strategy
-        - keywords: Key search terms extracted from the query and expansion
+      You are a specialized query expansion system for an agricultural retrieval system.
+
+      Your task is to enhance the original query by translating non-English queries to English and adding relevant agricultural terminology.
+
+      Guidelines:
+      1. Detect the language of the original query
+      2. For non-English queries, translate the core meaning to English
+      3. Add 3-5 specific English agricultural terms related to the query
+      4. For plant health issues (like yellowing leaves):
+        - Include terms for relevant nutrient deficiencies
+        - Add names of common diseases with those symptoms
+        - Include relevant pest names if applicable
+      5. Keep the augmented query concise (under 150 characters)
+      6. Focus on technical agricultural terminology that would appear in reference documents
+      7. Prioritize precision and specificity over breadth
+
+      Return a JSON object with:
+      - augmentedQuery: A concise English version with added technical terms (max 150 chars)
+      - expansionTerms: An array of 3-5 specific terms that were added
+      - keywords: Key search terms extracted from the query and expansion
       `;
       
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "gpt-3.5-turbo",
         response_format: { type: "json_object" },
         messages: [
           { role: "system", content: systemPrompt },

@@ -17,7 +17,7 @@ class RetrievalManager {
         // Default knowledge base to collection mappings
         this.knowledgeBaseMap = {
           'AGRICULTURE_KB': 'general_file',
-          'CROP_KB': 'general_file',
+          'CROP_KB': 'unique_file',
           'MARKET_KB': 'general_file',
           'WEATHER_KB': 'general_file',
           'REGIONAL_KB': 'general_file',
@@ -46,6 +46,7 @@ class RetrievalManager {
         this.registerKnowledgeBaseMapping(kb, collection);
         });
     }
+
     /**
      * Retrieve and weight documents
      * @param {string} query - Original user query
@@ -64,28 +65,31 @@ class RetrievalManager {
             if (!collectionsToQuery || collectionsToQuery.length === 0) {
                 // If no collections specified, check if intent has required KBs
                 if (context.intent && context.intent.requiredKnowledgeBases) {
-                collectionsToQuery = this.mapKnowledgeBasesToCollections(context.intent.requiredKnowledgeBases);
+                    collectionsToQuery = this.mapKnowledgeBasesToCollections(context.intent.requiredKnowledgeBases);
                 } else {
-                // Default to general_file if nothing else specified
-                collectionsToQuery = ['general_file'];
+                    // Default to general_file if nothing else specified
+                    collectionsToQuery = ['general_file'];
                 }
             }
             
             console.log(`Querying collections: ${collectionsToQuery.join(', ')}`);
             
+            // OPTIMIZATION: Use smaller top_k for initial retrieval
+            const topK = 6; // Reduced from 15 to 6 per collection
+            
             // Step 1: Retrieve initial documents
-            const rawResults = await this.retrieveDocuments(retrievalQuery, collectionsToQuery);
+            const rawResults = await this.retrieveDocuments(retrievalQuery, collectionsToQuery, { limit: topK });
             
             if (!rawResults.length) {
                 console.warn(`No results found for query: "${retrievalQuery.substring(0, 100)}..."`);
                 return { 
-                weightedResults: [],
-                retrievalStats: {
-                    totalRetrieved: 0,
-                    retrievalQuery,
-                    originalQuery: query,
-                    collections
-                }
+                    weightedResults: [],
+                    retrievalStats: {
+                        totalRetrieved: 0,
+                        retrievalQuery,
+                        originalQuery: query,
+                        collections
+                    }
                 };
             }
             
@@ -97,7 +101,7 @@ class RetrievalManager {
                 context
             );
             
-            // Step 3: Apply final ranking and filtering
+            // Step 3: Apply final ranking and filtering (finalizeResults is already updated to return 6 docs)
             const finalResults = this.finalizeResults(weightedResults);
             
             // Prepare stats for debugging and transparency
@@ -116,87 +120,88 @@ class RetrievalManager {
                 retrievalStats
             };
         } catch (error) {
-        console.error("Error in retrieveAndWeight:", error);
-        return { 
-            weightedResults: [],
-            retrievalStats: {
-            error: error.message,
-            originalQuery: query,
-            collections
-            }
-        };
+            console.error("Error in retrieveAndWeight:", error);
+            return { 
+                weightedResults: [],
+                retrievalStats: {
+                    error: error.message,
+                    originalQuery: query,
+                    collections
+                }
+            };
         }
     }
-    
     /**
      * Retrieve documents from vector store
      * @private
      */
-    async retrieveDocuments(query, collections) {
+    async retrieveDocuments(query, collections, options = {}) {
         try {
-          // Ensure we have collections to query
-          if (!collections || collections.length === 0) {
-            collections = ['general_file']; // Default to general_file if none specified
-            console.log(`No collections specified, using default: ${collections.join(', ')}`);
-          }
-          
-          console.log(`Attempting to query collections: ${collections.join(', ')} with query: "${query}"`);
-          
-          // Try to get documents with a more direct approach
-          let results = [];
-          
-          // Process each collection individually
-          for (const collection of collections) {
-            try {
-              console.log(`Querying collection: ${collection}`);
-              
-              // Check if the queryCollection (singular) method exists
-              if (typeof vectorStoreManager.queryCollection === 'function') {
-                const collectionResults = await vectorStoreManager.queryCollection(collection, query, {
-                  limit: 15,
-                  scoreThreshold: 0.1
-                });
-                
-                console.log(`Retrieved ${collectionResults.length} documents from collection ${collection}`);
-                results = results.concat(collectionResults);
-              } 
-              // Check if query method exists (some implementations use this naming)
-              else if (typeof vectorStoreManager.query === 'function') {
-                const collectionResults = await vectorStoreManager.query(query, {
-                  collection: collection,
-                  limit: 15,
-                  scoreThreshold: 0.1
-                });
-                
-                console.log(`Retrieved ${collectionResults.length} documents using query method from collection ${collection}`);
-                results = results.concat(collectionResults);
-              }
-              // Try queryCollections method (plural)
-              else if (typeof vectorStoreManager.queryCollections === 'function') {
-                const collectionResults = await vectorStoreManager.queryCollections([collection], query, {
-                  limit: 15,
-                  scoreThreshold: 0.1
-                });
-                
-                console.log(`Retrieved ${collectionResults.length} documents using queryCollections method from collection ${collection}`);
-                results = results.concat(collectionResults);
-              }
-              else {
-                console.error(`No suitable query method found in vectorStoreManager for collection ${collection}`);
-              }
-            } catch (collectionError) {
-              console.error(`Error querying collection ${collection}:`, collectionError);
-              // Continue with next collection
+            const { limit = 6, scoreThreshold = 0.1 } = options;
+            
+            // Ensure we have collections to query
+            if (!collections || collections.length === 0) {
+                collections = ['general_file']; // Default to general_file if none specified
+                console.log(`No collections specified, using default: ${collections.join(', ')}`);
             }
-          }
-          
-          console.log(`Total documents retrieved across all collections: ${results.length}`);
-          return results;
+            
+            console.log(`Attempting to query collections: ${collections.join(', ')} with query: "${query}"`);
+            
+            // Try to get documents with a more direct approach
+            let results = [];
+            
+            // Process each collection individually
+            for (const collection of collections) {
+                try {
+                    console.log(`Querying collection: ${collection}`);
+                    
+                    // Check if the queryCollection (singular) method exists
+                    if (typeof vectorStoreManager.queryCollection === 'function') {
+                        const collectionResults = await vectorStoreManager.queryCollection(collection, query, {
+                            limit: limit,
+                            scoreThreshold: scoreThreshold
+                        });
+                        
+                        console.log(`Retrieved ${collectionResults.length} documents from collection ${collection}`);
+                        results = results.concat(collectionResults);
+                    } 
+                    // Check if query method exists (some implementations use this naming)
+                    else if (typeof vectorStoreManager.query === 'function') {
+                        const collectionResults = await vectorStoreManager.query(query, {
+                            collection: collection,
+                            limit: limit,
+                            scoreThreshold: scoreThreshold
+                        });
+                        
+                        console.log(`Retrieved ${collectionResults.length} documents using query method from collection ${collection}`);
+                        results = results.concat(collectionResults);
+                    }
+                    // Try queryCollections method (plural)
+                    else if (typeof vectorStoreManager.queryCollections === 'function') {
+                        const collectionResults = await vectorStoreManager.queryCollections([collection], query, {
+                            limit: limit,
+                            scoreThreshold: scoreThreshold
+                        });
+                        
+                        console.log(`Retrieved ${collectionResults.length} documents using queryCollections method from collection ${collection}`);
+                        results = results.concat(collectionResults);
+                    }
+                    else {
+                        console.error(`No suitable query method found in vectorStoreManager for collection ${collection}`);
+                    }
+                } catch (collectionError) {
+                    console.error(`Error querying collection ${collection}:`, collectionError);
+                    // Continue with next collection
+                }
+            }
+            
+            console.log(`Total documents retrieved across all collections: ${results.length}`);
+            return results;
         } catch (error) {
-          console.error("Error retrieving documents:", error);
-          return [];
+            console.error("Error retrieving documents:", error);
+            return [];
         }
-      }
+    }
     
     /**
      * Apply dynamic weighting to retrieved documents
@@ -346,95 +351,134 @@ class RetrievalManager {
      * @private
      */
     async applyLLMWeighting(documents, originalQuery, queryAugmentation, context) {
-        // Prepare context information for LLM
-        const { intent, agricultureAnalysis, contextSummary } = context;
-        
         // For small document sets, fall back to rule-based weighting
         if (documents.length <= 3) {
-        return documents;
+            return documents;
         }
         
         try {
-        // Create summary representations of documents for the LLM
-        const documentSummaries = documents.map((doc, index) => ({
-            id: index,
-            title: doc.metadata?.title || `Document ${index + 1}`,
-            source: doc.metadata?.source || 'Unknown',
-            content_excerpt: (doc.pageContent || doc.content || "No content available").substring(0, 200) + '...',
-            initial_score: doc.finalScore
-        }));
-        
-        const systemPrompt = `
-            You are an expert agricultural document ranker. Your task is to analyze a set of retrieved documents
-            and assign relevance scores (0.0-1.0) to each based on how well they address the user's query.
+            // Create summary representations of documents for the LLM
+            const documentSummaries = documents.map((doc, index) => ({
+                id: index,
+                title: doc.metadata?.title || `Document ${index + 1}`,
+                source: doc.metadata?.source || 'Unknown',
+                content_excerpt: (doc.pageContent || doc.content || "No content available").substring(0, 200) + '...',
+                initial_score: doc.finalScore
+            }));
             
-            Consider these factors when scoring:
-            1. Relevance to the original query
-            2. Alignment with the user's intent (informational, recommendation, troubleshooting, etc.)
-            3. Coverage of the detected agricultural topics and crops
-            4. Information quality, specificity, and actionability
-            5. Complementary information across the document set (avoid redundancy)
+            const systemPrompt = `
+                You are an expert document relevance judge. Your task is to evaluate the relevance of retrieved documents to a user's query.
+                
+                You will receive:
+                1. The original user query
+                2. Query augmentation details (if available)
+                3. User intent (if identified)
+                4. Agricultural context (if available)
+                5. A list of document summaries with their initial relevance scores
+                
+                For each document, evaluate its relevance to the query on a scale of 0.0 to 1.0 where:
+                - 1.0 = Extremely relevant, directly answers the user's question
+                - 0.7 = Highly relevant, contains most of the information needed
+                - 0.5 = Moderately relevant, contains some useful information
+                - 0.3 = Slightly relevant, tangentially related
+                - 0.0 = Not relevant
+                
+                Your response must be a valid JSON array of objects, with each object having:
+                - "id": The document ID (integer, matching the id in the input)
+                - "relevance": Your relevance score (float between 0 and 1)
+                
+                Example response:
+                [
+                    {"id": 0, "relevance": 0.9},
+                    {"id": 1, "relevance": 0.4},
+                    {"id": 2, "relevance": 0.7}
+                ]
+            `;
             
-            Return a JSON array with document IDs and their relevance scores.
-            Example: [{"id": 0, "relevance": 0.92}, {"id": 1, "relevance": 0.67}, ...]
-        `;
-        
-        const userMessage = JSON.stringify({
-            query: originalQuery,
-            query_augmentation: queryAugmentation ? {
-            expanded_query: queryAugmentation.augmentedQuery,
-            keywords: queryAugmentation.keywords
-            } : null,
-            intent: intent ? {
-            primary: intent.intent,
-            secondary: intent.secondaryIntents
-            } : null,
-            agricultural_context: agricultureAnalysis ? {
-            topic: agricultureAnalysis.primaryTopic,
-            crops: agricultureAnalysis.detectedCrops.map(c => c.name),
-            conditions: agricultureAnalysis.conditions
-            } : null,
-            conversation_context: contextSummary ? contextSummary.summary : null,
-            documents: documentSummaries
-        });
-        
-        const response = await openai.chat.completions.create({
-            model: "gpt-4o",
-            response_format: { type: "json_object" },
-            messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userMessage }
-            ]
-        });
-        
-        // Parse LLM response
-        const result = JSON.parse(response.choices[0].message.content);
-        
-        // Ensure result has the expected format
-        if (!Array.isArray(result)) {
-            throw new Error("Invalid LLM response format");
-        }
-        
-        // Map the LLM scores back to documents
-        return documents.map((doc, index) => {
-            const llmScore = result.find(r => r.id === index)?.relevance || doc.finalScore;
+            const userMessage = JSON.stringify({
+                query: originalQuery,
+                query_augmentation: queryAugmentation ? {
+                    expanded_query: queryAugmentation.augmentedQuery,
+                    keywords: queryAugmentation.keywords
+                } : null,
+                intent: context.intent ? {
+                    primary: context.intent.primary || context.intent.intent,
+                    secondary: context.intent.secondary || context.intent.secondaryIntents || []
+                } : null,
+                agricultural_context: context.agricultureAnalysis ? {
+                    topic: context.agricultureAnalysis.primaryTopic,
+                    crops: context.agricultureAnalysis.detectedCrops?.map(c => c.name) || [],
+                    conditions: context.agricultureAnalysis.conditions || []
+                } : null,
+                conversation_context: context.contextSummary ? context.contextSummary.summary : null,
+                documents: documentSummaries
+            });
             
-            // Blend LLM score with rule-based score
-            const blendedScore = (llmScore * 0.7) + (doc.finalScore * 0.3);
+            const response = await openai.chat.completions.create({
+                model: "gpt-4o",
+                response_format: { type: "json_object" },
+                messages: [
+                    { role: "system", content: systemPrompt },
+                    { role: "user", content: userMessage }
+                ]
+            });
             
-            return {
-            ...doc,
-            finalScore: blendedScore,
-            weights: {
-                ...doc.weights,
-                llm: llmScore
+            let result;
+            try {
+                // Parse the JSON response
+                const responseContent = response.choices[0].message.content;
+                result = JSON.parse(responseContent);
+
+                // Handle different response formats
+                if (result.documents && Array.isArray(result.documents)) {
+                    result = result.documents;
+                } else if (result.results && Array.isArray(result.results)) {
+                    result = result.results;
+                } else if (result.evaluations && Array.isArray(result.evaluations)) {
+                    // Add this condition to handle the evaluations format
+                    result = result.evaluations;
+                } else if (!Array.isArray(result)) {
+                    console.warn("LLM returned unexpected format:", responseContent);
+                    throw new Error("Response is not an array or doesn't contain an array property");
+                }
+                
+                // Validate each item has id and relevance
+                const isValid = result.every(item => 
+                    typeof item === 'object' && 
+                    item !== null && 
+                    'id' in item && 
+                    'relevance' in item
+                );
+                
+                if (!isValid) {
+                    throw new Error("Some items missing required fields");
+                }
+            } catch (parseError) {
+                console.error("Failed to parse LLM response:", parseError);
+                throw new Error("Invalid LLM response format: " + parseError.message);
             }
-            };
-        });
+            
+            // Map the LLM scores back to documents
+            return documents.map((doc, index) => {
+                const resultItem = result.find(r => r.id === index);
+                const llmScore = resultItem ? resultItem.relevance : doc.finalScore;
+                
+                // Blend LLM score with rule-based score
+                const blendedScore = (llmScore * 0.7) + (doc.finalScore * 0.3);
+                
+                return {
+                    ...doc,
+                    finalScore: blendedScore,
+                    weights: {
+                        ...doc.weights,
+                        llm: llmScore
+                    }
+                };
+            });
         } catch (error) {
-        console.error("Error in LLM weighting:", error);
-        // Fall back to rule-based weights
-        return documents;
+            console.error("Error in LLM weighting:", error);
+            // Fall back to rule-based weights
+            return documents;
         }
     }
     
@@ -451,7 +495,7 @@ class RetrievalManager {
         const filteredDocs = sortedDocs.filter(doc => doc.finalScore >= threshold);
         
         // Return up to 10 documents
-        return filteredDocs.slice(0, 10);
+        return filteredDocs.slice(0, 6);
     }
 
     /**
@@ -464,21 +508,8 @@ class RetrievalManager {
         return ['general_file']; // Default to general_file if none specified
         }
         
-        // Current mapping based on available collections
-        const knowledgeBaseMap = {
-        'AGRICULTURE_KB': 'general_file',
-        'CROP_KB': 'general_file',
-        'MARKET_KB': 'general_file',
-        'WEATHER_KB': 'general_file',
-        'REGIONAL_KB': 'general_file',
-        'SYSTEM_KB': 'system',        // For potential future system collection
-        'CUSTOMER_KB': 'unique_file'  // For customer-specific data
-        };
-        
-        // This allows for direct collection name specification too
-        // E.g., if knowledgeBases contains "customer_collection_123"
         const mappedCollections = knowledgeBases
-        .map(kb => knowledgeBaseMap[kb] || kb)
+        .map(kb => this.knowledgeBaseMap[kb] || kb)
         .filter(Boolean);
         
         // Deduplicate collections

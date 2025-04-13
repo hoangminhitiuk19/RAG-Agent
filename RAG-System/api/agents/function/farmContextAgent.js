@@ -17,6 +17,47 @@ class FarmContextAgent {
     this.contextCache = {};
   }
 
+  async getWeatherForFarm(farm, locationHierarchy) {
+    let weather = null;
+  
+    // Attempt to get weather using coordinates from the farm table
+    if (farm.coordinates) {
+      try {
+        const coordsObj = typeof farm.coordinates === 'string' 
+          ? JSON.parse(farm.coordinates) 
+          : farm.coordinates;
+          
+        if (coordsObj && coordsObj.latitude && coordsObj.longitude) {
+          weather = await weatherService.getCurrentWeatherByCoordinates(
+            coordsObj.latitude, 
+            coordsObj.longitude
+          );
+          console.log('Retrieved weather data using farm coordinates');
+        }
+      } catch (coordsError) {
+        console.error('Error parsing farm coordinates:', coordsError);
+      }
+    }
+  
+    // If weather not found by coordinates, try using the city name from the admin_unit table
+    if (!weather && locationHierarchy.length > 0) {
+      const city = locationHierarchy.find(unit => 
+        unit.admin_unit_type === 'City' || unit.admin_unit_type === 'Municipality'
+      );
+      
+      if (city) {
+        try {
+          weather = await weatherService.getWeatherByCity(city.name);
+          console.log(`Weather found for city: ${city.name}`);
+        } catch (weatherError) {
+          console.log('City-level weather data not available:', weatherError.message);
+        }
+      }
+    }
+  
+    return weather;
+  }
+
   /**
    * Get comprehensive farm context - the main method for retrieving farm data
    * @param {string} farmId - Farm ID
@@ -51,21 +92,7 @@ class FarmContextAgent {
 
       const crops = await getFarmCropsOfAFarm(farmId);
 
-      let weather = null;
-      if (locationHierarchy.length > 0) {
-        // Find the most specific location (city/municipality) to use for weather
-        const city = locationHierarchy.find(unit => 
-          unit.admin_unit_type === 'City' || unit.admin_unit_type === 'Municipality'
-        );
-        
-        if (city) {
-          try {
-            weather = await weatherService.getWeatherByCity(city.name);
-          } catch (weatherError) {
-            console.log('Weather data not available:', weatherError.message);
-          }
-        }
-      }
+      const weather = await getWeatherForFarm(farm, locationHierarchy);
 
       const issues = await getFarmIssueHistory(farmId);
 

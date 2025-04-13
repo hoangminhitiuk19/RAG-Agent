@@ -962,10 +962,9 @@ router.post('/message/stream', async (req, res) => {
         conversation_id: activeConversationId,
         is_new_conversation: true
       })}\n\n`);
-
     }
 
-    
+    // Store message with proper metadata flag
     await conversationService.storeMessage({
       chatId: activeConversationId,
       role: 'user',

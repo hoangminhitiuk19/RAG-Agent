@@ -1,6 +1,10 @@
 const { OpenAI } = require("openai");
 const { getConfig } = require('../config');
 
+
+const NodeCache = require('node-cache');
+const openaiCache = new NodeCache({ stdTTL: 3600, checkperiod: 120 });
+
 /**
  * Factory function to create OpenAI client instance
  */
@@ -42,11 +46,26 @@ module.exports = {
    * @param {Object} options - Options for the completion
    * @returns {Object} - OpenAI completion response
    */
+  // Update getChatCompletion method
   async getChatCompletion(messages, options = {}) {
     try {
+      // Generate a cache key
+      const cacheKey = JSON.stringify({
+        messages: messages.map(m => ({ role: m.role, content: m.content.substring(0, 100) })),
+        model: options.model || getConfig().openaiModel,
+        temperature: options.temperature || 0.7
+      });
+      
+      // Check cache
+      const cachedResponse = openaiCache.get(cacheKey);
+      if (cachedResponse) {
+        console.log("Using cached OpenAI response");
+        return cachedResponse;
+      }
+      
       const defaultOptions = {
         model: getConfig().openaiModel,
-        temperature: 0.7,
+        temperature: 0.3,
         top_p: 0.9,
         max_tokens: 1500
       };
@@ -54,6 +73,10 @@ module.exports = {
       const completionOptions = { ...defaultOptions, ...options, messages };
       
       const response = await openaiInstance.chat.completions.create(completionOptions);
+      
+      // Cache the response
+      openaiCache.set(cacheKey, response);
+      
       return response;
     } catch (error) {
       console.error(`OpenAI error: ${error.message}`);

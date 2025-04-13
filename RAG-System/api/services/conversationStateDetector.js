@@ -14,15 +14,29 @@ class ConversationStateDetector {
    * @returns {Promise<Object>} - State classification with confidence score
    */
   async detectState(currentQuery, conversationHistory = []) {
-    // If no history, it's the initial message
-    if (!conversationHistory || conversationHistory.length === 0) {
+    console.log(`State detection: ${conversationHistory.length} messages in history`);
+    
+    // Check if this is explicitly a new conversation from metadata
+    const isNewConversation = conversationHistory.length > 0 && 
+                             conversationHistory[0].metadata && 
+                             conversationHistory[0].metadata.isNewConversation === true;
+    
+    // Add debugging for metadata
+    if (conversationHistory.length > 0 && conversationHistory[0].metadata) {
+      console.log("First message metadata:", JSON.stringify(conversationHistory[0].metadata));
+    }
+    
+    // If no history or explicitly marked as new, it's the initial message
+    if (!conversationHistory || conversationHistory.length === 0 || isNewConversation) {
+      console.log("Setting state to INITIAL: " + 
+                 (isNewConversation ? "new conversation flag" : "no conversation history"));
       return {
         state: 'INITIAL',
         confidence: 1.0,
-        explanation: 'First message in conversation'
+        explanation: isNewConversation ? 'New conversation based on metadata' : 'First message in conversation'
       };
     }
-
+  
     // For very short queries, likely a continuation
     if (currentQuery.length < 15 && conversationHistory.length > 0) {
       return {
@@ -31,7 +45,7 @@ class ConversationStateDetector {
         explanation: 'Short query, likely continues previous conversation'
       };
     }
-
+  
     // For deeper analysis, use LLM
     return this.analyzeContinuityWithLLM(currentQuery, conversationHistory);
   }
@@ -63,7 +77,7 @@ class ConversationStateDetector {
       `;
       
       const response = await openai.chat.completions.create({
-        model: "gpt-4o", // Use the configured model
+        model: "gpt-3.5-turbo", // Use the configured model
         response_format: { type: "json_object" },
         messages: [
           { role: "system", content: systemPrompt },

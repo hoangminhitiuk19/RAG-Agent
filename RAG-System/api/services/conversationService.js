@@ -361,7 +361,8 @@ class ConversationService {
         // Format for OpenAI chat completions
         return data.map(msg => ({
           role: msg.role,
-          content: msg.content
+          content: msg.content,
+          metadata: msg.metadata // Include metadata for state detection
         }));
       }
       

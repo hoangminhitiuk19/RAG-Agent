@@ -9,7 +9,7 @@ const { queryAugmenter } = require('../../services/queryAugmenter');
 const { retrievalManager } = require('../../services/retrievalManager');
 const { classifyIntent } = require('./enhancedIntentClassifier');
 const { getConversationContext } = require('../../utils/contextUtils');
-
+const { topicFunctionMapper } = require('../../services/topicFunctionMapper');
 
 class OrchestratorAgent {
   constructor() {
@@ -123,15 +123,7 @@ class OrchestratorAgent {
           args: { imageUrl }
         });
       }
-      
-      // Step 7: Retrieve relevant information from vector stores
-      // const retrievalResults = await this.retrieveRelevantKnowledge(
-      //   message,
-      //   conversationHistory,
-      //   requiredKnowledgeBases,
-      //   contextSummary
-      // );
-      
+
 
       // New retrieval process
       const retrievalData = await this.retrieveRelevantKnowledge(
@@ -179,71 +171,53 @@ class OrchestratorAgent {
     }
   }
 
-  // /**
-  //  * Retrieve knowledge from specified vector databases
-  //  */
-  // async retrieveRelevantKnowledge(message, conversationHistory, knowledgeBases, contextSummary = null, intentClassification = null, agricultureAnalysis = null) {
-  //   try {
-  //     // Use query augmentation to enhance retrieval
-  //     const queryAugmentation = await queryAugmenter.augmentQuery(
-  //       message,
-  //       contextSummary,
-  //       intentClassification,
-  //       agricultureAnalysis
-  //     );
-      
-  //     // Use the augmented query for retrieval
-  //     const retrievalQuery = queryAugmentation.augmentedQuery;
-      
-  //     console.log(`Original query: "${message}"`);
-  //     console.log(`Augmented query: "${retrievalQuery}"`);
-  //     console.log(`Expansion terms: ${queryAugmentation.expansionTerms.join(', ')}`);
-      
-  //     // Map knowledge bases to collections
-  //     const collections = this.mapKnowledgeBasesToCollections(knowledgeBases);
-  //     console.log(`Mapped collections: ${collections.join(', ')}`);
-
-  //     const results = await vectorStoreManager.queryCollections(collections, retrievalQuery, {
-  //       scoreThreshold: 0.0  // Explicitly set low threshold
-  //     });
-      
-  //     console.log(`Retrieved ${results.length} documents with score range: ${
-  //       results.length > 0 
-  //         ? `${Math.min(...results.map(r => r.metadata.score))} to ${Math.max(...results.map(r => r.metadata.score))}`
-  //         : 'N/A'
-  //     }`);
-      
-  //     if (results.length === 0) {
-  //       console.warn(`No results found for query: "${retrievalQuery.substring(0, 100)}..."`);
-  //     }
-      
-  //     // Add query augmentation info to the results for citation/explanation
-  //     return {
-  //       results,
-  //       queryAugmentation
-  //     };
-  //   } catch (error) {
-  //     console.error("Error retrieving knowledge:", error);
-  //     return { 
-  //       results: [],
-  //       queryAugmentation: null
-  //     };
-  //   }
-  // }
-
   //New retrieve function
   /**
    * Retrieve knowledge from specified knowledge bases
    */
-  async retrieveRelevantKnowledge(message, conversationHistory, knowledgeBases, contextSummary = null, intentClassification = null, agricultureAnalysis = null) {
+  async retrieveRelevantKnowledge(message, conversationHistory, knowledgeBases, contextSummary = null, intentClassification = null, agricultureAnalysis = null, existingQueryAugmentation = null, skipAugmentation = false) {
     try {
+      // Automatically add CROP_KB if specific crops are detected
+      let updatedKnowledgeBases = [...knowledgeBases];
+      
+      if (agricultureAnalysis && 
+          agricultureAnalysis.detectedCrops && 
+          agricultureAnalysis.detectedCrops.length > 0) {
+        
+        // If specific crops detected and CROP_KB not already included, add it
+        if (!updatedKnowledgeBases.includes('CROP_KB')) {
+          console.log(`Specific crops detected (${agricultureAnalysis.detectedCrops.map(c => c.name).join(', ')}), adding CROP_KB`);
+          updatedKnowledgeBases.push('CROP_KB');
+        }
+      }
       // Step 1: Use query augmentation to enhance retrieval
-      const queryAugmentation = await queryAugmenter.augmentQuery(
-        message,
-        contextSummary,
-        intentClassification,
-        agricultureAnalysis
-      );
+      let queryAugmentation;
+
+      // Check if we should use the original query directly
+      if (existingQueryAugmentation === null && skipAugmentation === true) {
+        // Use original query without augmentation
+        queryAugmentation = {
+          originalQuery: message,
+          augmentedQuery: message, // No augmentation, use original
+          expansionTerms: [],
+          rationale: "Skipping augmentation as requested",
+          keywords: [message]
+        };
+        console.log('Skipping query augmentation, using original query');
+      } else if (existingQueryAugmentation) {
+        // Use provided augmentation
+        queryAugmentation = existingQueryAugmentation;
+        console.log('Using existing query augmentation');
+      } else {
+        // Generate new augmentation
+        queryAugmentation = await queryAugmenter.augmentQuery(
+          message,
+          contextSummary,
+          intentClassification,
+          agricultureAnalysis
+        );
+        console.log('Generated new query augmentation');
+      }
       // After calling queryAugmenter.augmentQuery:
       console.log(`Original query: "${message}"`);
       console.log(`Augmented query: "${queryAugmentation.augmentedQuery}"`);
@@ -301,18 +275,23 @@ class OrchestratorAgent {
       return {};
     }
     
-    const functionPromises = requiredFunctions.map(funcName => 
+    const filteredFunctions = requiredFunctions.filter(f => f !== 'analyzeImage');
+    
+    const functionPromises = filteredFunctions.map(funcName => 
       this.functionAgent.callFunction({
         name: funcName,
         args: { message, farmContext, conversationHistory }
       })
     );
     
-    const functionResults = await Promise.all(functionPromises);
+    const functionResults = await Promise.allSettled(functionPromises);
     
     // Convert array of results to object with function names as keys
     return functionResults.reduce((acc, result, index) => {
-      acc[requiredFunctions[index]] = result;
+      const funcName = filteredFunctions[index];
+      acc[funcName] = result.status === 'fulfilled' ? 
+        result.value : 
+        { error: result.reason?.message || 'Function execution failed' };
       return acc;
     }, {});
   }
@@ -375,30 +354,51 @@ class OrchestratorAgent {
   
       // Step 1: Detect conversation state
       const stateStartTime = Date.now();
+      
+      // Log conversation history metadata to debug
+      if (conversationHistory && conversationHistory.length > 0 && conversationHistory[0].metadata) {
+        console.log(`Conversation history first message metadata:`, conversationHistory[0].metadata);
+      }
+      
       const conversationState = await conversationStateDetector.detectState(
         message, 
         conversationHistory
       );
       metrics.processingTime.stateDetection = Date.now() - stateStartTime;
       metrics.confidenceScores.state = conversationState.confidence;
-      
+
       console.log(`Conversation state detected: ${conversationState.state} (${conversationState.confidence})`);
-      
-      // Step 2: Context summarization (if CONTINUATION)
+
+      // Step 2: Context summarization and Intent Classification
       let contextSummary = null;
-      if (conversationState.state === 'CONTINUATION') {
-        const summaryStartTime = Date.now();
-        contextSummary = await contextSummarizer.summarizeContext(
-          message,
-          conversationHistory
-        );
-        metrics.processingTime.contextSummary = Date.now() - summaryStartTime;
-        console.log(`Context summary generated, relevance: ${contextSummary.relevance}`);
-      }
-      
-      // Step 3: Enhanced Intent Classification
+      let intentClassification = null;
       const intentStartTime = Date.now();
-      const intentClassification = await classifyIntent(message, conversationHistory, contextSummary);
+
+      if (conversationState.state === 'CONTINUATION') {
+        [contextSummary, intentClassification] = await Promise.all([
+          contextSummarizer.summarizeContext(message, conversationHistory),
+          classifyIntent(message, conversationHistory, null) // Pass null for now
+        ]);
+        // Record context summary timing
+        metrics.processingTime.contextSummary = contextSummary ? Date.now() - intentStartTime : 0;
+        
+        if (contextSummary) {
+          console.log(`Context summary generated, relevance: ${contextSummary.relevance}`);
+        }
+      } else {
+        // If new topic or initial, just run intent classification
+        intentClassification = await classifyIntent(message, conversationHistory, null);
+      }
+
+      // Update intent classification with context summary if needed
+      if (contextSummary && contextSummary.relevance > 0.5) {
+        // Only re-classify if we have relevant context and initial classification confidence is low
+        if (intentClassification.confidence < 0.8) {
+          intentClassification = await classifyIntent(message, conversationHistory, contextSummary);
+        }
+      }
+
+      // Extract data from intentClassification
       const { 
         intent, 
         confidence: intentConfidence,
@@ -407,14 +407,15 @@ class OrchestratorAgent {
         requiredKnowledgeBases, 
         requiredFunctions 
       } = intentClassification;
+
       metrics.processingTime.intentClassification = Date.now() - intentStartTime;
       metrics.confidenceScores.intent = intentConfidence;
-  
+
       console.log(`Intent classified as: ${intent} (confidence: ${intentConfidence})`);
       if (secondaryIntents && secondaryIntents.length > 0) {
         console.log(`Secondary intents: ${secondaryIntents.join(', ')}`);
       }
-  
+
       // Step 4: Combined Topic & Crop Analysis
       const analysisStartTime = Date.now();
       const agricultureAnalysis = await agricultureAnalyzer.analyzeTopicAndCrops(
@@ -424,12 +425,13 @@ class OrchestratorAgent {
       );
       metrics.processingTime.agricultureAnalysis = Date.now() - analysisStartTime;
       metrics.confidenceScores.agriculture = agricultureAnalysis.topicConfidence;
-      
+
       console.log(`Agricultural topic: ${agricultureAnalysis.primaryTopic} (${agricultureAnalysis.topicConfidence})`);
       if (agricultureAnalysis.detectedCrops.length > 0) {
         console.log(`Detected crops: ${agricultureAnalysis.detectedCrops.map(c => c.name).join(', ')}`);
       }
-  
+      
+      
       res.write(`data: ${JSON.stringify({
         text_chunk: "Retrieving relevant information...",
         conversation_id: conversation_id
@@ -441,19 +443,73 @@ class OrchestratorAgent {
         const farmContextAgent = require('../function/farmContextAgent');
         farmContext = await farmContextAgent.getFarmContext(farmId, userProfileId);
       }
-  
+
       const farmData = farmContext?.farmData || null;
       const cropData = farmContext?.cropData || [];
       const weatherData = farmContext?.weatherData || null;
+      const issues = farmContext?.issues || [];
   
       // Handle image analysis
       let imageAnalysisResult = null;
-      if (imageUrl && requiredFunctions.includes('analyzeImage')) {
-        imageAnalysisResult = await this.functionAgent.callFunction({
-          name: 'analyzeImage',
-          args: { imageUrl }
-        });
+      if (imageUrl) {
+        if (requiredFunctions.includes('analyzeImage')) {
+          try {
+            console.log(`Processing image analysis for URL: ${imageUrl}`);
+            imageAnalysisResult = await this.functionAgent.callFunction({
+              name: 'analyzeImage',
+              args: { imageUrl }
+            });
+            console.log('Image analysis completed successfully');
+          } catch (imageError) {
+            console.error('Error during image analysis:', imageError.message);
+          }
+        }
+      } else {
+        // Check if this is a pest/disease case where an image would be helpful
+        const isImageRelevant = intent === 'PEST_DISEASE_IDENTIFICATION' || 
+                                (agricultureAnalysis && agricultureAnalysis.primaryTopic === 'pest_and_disease');
+        
+        if (isImageRelevant) {
+          console.log('No image provided, but intent suggests one would be helpful');
+          // We'll handle this later in responseGenerator.processResponse
+        }
       }
+
+      let topicSpecificData = null;
+      let skipAugmentation = false;
+
+      if (agricultureAnalysis && agricultureAnalysis.primaryTopic) {
+        // Get all topics (primary + any secondary topics identified)
+        const topics = [agricultureAnalysis.primaryTopic];
+        if (agricultureAnalysis.secondaryTopics && agricultureAnalysis.secondaryTopics.length > 0) {
+          topics.push(...agricultureAnalysis.secondaryTopics);
+        }
+        
+        // Execute the required functions for these topics
+        const { results, allResultsNull } = await topicFunctionMapper.executeRequiredFunctions(
+          topics,
+          { farmData, cropData, issues: issues || [], weatherData }
+        );
+        
+        topicSpecificData = results;
+        
+        // If all results are null, decide whether to skip augmentation
+        if (allResultsNull) {
+          console.log('All topic-specific data sources returned null values');
+          skipAugmentation = true;
+        }
+      }
+      let queryAugmentation = null;
+      if (!skipAugmentation) {
+        queryAugmentation = await queryAugmenter.augmentQuery(
+          message,
+          contextSummary,
+          intentClassification,
+          agricultureAnalysis,
+          topicSpecificData // Pass this additional data to the augmenter
+        );
+      }
+
       console.log('Step 5: Beginning query augmentation and retrieval...');
       // Step 5 & 6: Query Augmentation and Dynamic Knowledge Weighting
       const retrievalStartTime = Date.now();
@@ -463,12 +519,14 @@ class OrchestratorAgent {
         requiredKnowledgeBases,
         contextSummary,
         intentClassification,
-        agricultureAnalysis
+        agricultureAnalysis,
+        skipAugmentation ? null : queryAugmentation, // Pass null if we're skipping
+        skipAugmentation // Also pass the skipAugmentation flag
       );
       metrics.processingTime.retrieval = Date.now() - retrievalStartTime;
       
       const retrievalResults = retrievalData.results;
-      const queryAugmentation = retrievalData.queryAugmentation;
+      queryAugmentation = retrievalData.queryAugmentation;
       const retrievalStats = retrievalData.retrievalStats;
       
       metrics.documentCounts.retrieved = retrievalStats.totalRetrieved || 0;
@@ -477,15 +535,29 @@ class OrchestratorAgent {
       console.log(`Step 6: Retrieved ${retrievalData.results.length} documents`);
       console.log(`Query Augmentation: "${retrievalData.queryAugmentation?.augmentedQuery || 'Not available'}"`);
       // Execute required functions
+
       const functionStartTime = Date.now();
+
+      // Filter out analyzeImage from requiredFunctions if no imageUrl is provided
+      const filteredFunctions = imageUrl 
+        ? requiredFunctions 
+        : requiredFunctions.filter(f => f !== 'analyzeImage');
+
       const functionResults = await this.executeFunctions(
-        requiredFunctions,
+        filteredFunctions,
         message,
         farmData,
-        conversationHistory
+        conversationHistory,
+        imageUrl  // Pass imageUrl to the function
       );
+
+      // If imageUrl exists and analyzeImage was requested, merge the result
+      if (imageUrl && requiredFunctions.includes('analyzeImage') && imageAnalysisResult) {
+        functionResults.analyzeImage = imageAnalysisResult;
+      }
+
       metrics.processingTime.functionExecution = Date.now() - functionStartTime;
-  
+        
       // Step 7 & 8: Intent-Based Prompt Construction and Response Generation
       const responseStartTime = Date.now();
       

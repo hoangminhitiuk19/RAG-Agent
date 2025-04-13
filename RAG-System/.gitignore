@@ -101,5 +101,6 @@ stream-test.html
 clear-cache.bat
 /tests
 /node_modules
+/api/node_modules
 /deploy
 *.txt

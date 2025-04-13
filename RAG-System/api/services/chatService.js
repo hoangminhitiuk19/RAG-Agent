@@ -107,9 +107,18 @@ async function processMessageStreaming({
   try {
     const orchestrator = new OrchestratorAgent();
 
+    // Include the formatForOpenAI parameter to ensure metadata is included
     const conversationHistory = conversation_id
-      ? await conversationService.getConversationHistory(conversation_id, { formatForOpenAI: true })
+      ? await conversationService.getConversationHistory(conversation_id, { 
+          formatForOpenAI: true,
+          limit: 50 // Fetch more history to provide better context
+        })
       : [];
+      
+    // Log the first message's metadata to help debug state detection
+    if (conversationHistory.length > 0 && conversationHistory[0].metadata) {
+      console.log('First message metadata in history:', JSON.stringify(conversationHistory[0].metadata));
+    }
 
     const response = await orchestrator.streamProcess({
       conversation_id,

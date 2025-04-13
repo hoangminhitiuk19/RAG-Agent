@@ -115,7 +115,7 @@ Conditions: ${agricultureAnalysis.conditions.join(', ') || 'None specifically me
     }
     
     const systemPrompt = `
-You are an expert agricultural assistant specializing in coffee farming. 
+You are an expert agricultural assistant specializing in regenerative farming. 
 Your task is to provide accurate factual information based on the retrieved content.
 
 Guidelines:
@@ -196,7 +196,7 @@ Conditions: ${agricultureAnalysis.conditions.join(', ') || 'None specifically me
     }
     
     const systemPrompt = `
-You are an expert agricultural advisor specializing in coffee farming. 
+You are an expert agricultural advisor specializing in regenerative farming. 
 Your task is to provide personalized recommendations based on the user's context and the retrieved content.
 
 Guidelines:
@@ -281,7 +281,7 @@ Conditions: ${agricultureAnalysis.conditions.join(', ') || 'None specifically me
     }
     
     const systemPrompt = `
-You are an expert agricultural troubleshooter specializing in coffee farming. 
+You are an expert agricultural troubleshooter specializing in regenerative farming. 
 Your task is to diagnose problems and suggest solutions based on the user's situation.
 
 Guidelines:
@@ -365,7 +365,7 @@ Conditions: ${agricultureAnalysis.conditions.join(', ') || 'None specifically me
     }
     
     const systemPrompt = `
-You are an expert in plant pathology and pest management specializing in coffee farming. 
+You are an expert in plant pathology and pest management specializing in regenerative farming. 
 Your task is to identify pests, diseases, or deficiencies and provide treatment recommendations.
 
 Guidelines:
@@ -447,7 +447,7 @@ Conditions: ${agricultureAnalysis.conditions.join(', ') || 'None specifically me
     }
     
     const systemPrompt = `
-You are an expert in agricultural markets and pricing specializing in coffee. 
+You are an expert in agricultural markets and pricing specializing in agriculture. 
 Your task is to provide market insights, pricing information, and trend analysis.
 
 Guidelines:
@@ -525,7 +525,7 @@ Conditions: ${agricultureAnalysis.conditions.join(', ') || 'None specifically me
     }
     
     const systemPrompt = `
-You are an expert agricultural assistant specializing in coffee farming. 
+You are an expert agricultural assistant specializing in regenerative farming. 
 The user's query involves multiple intents: ${intentsList}. 
 Your task is to address all aspects of the query comprehensively.
 
@@ -598,7 +598,7 @@ Conditions: ${agricultureAnalysis.conditions.join(', ') || 'None specifically me
     }
     
     const systemPrompt = `
-You are an expert agricultural assistant specializing in coffee farming. 
+You are an expert agricultural assistant specializing in regenerative farming. 
 Your task is to provide helpful information based on the user's query.
 
 Guidelines:

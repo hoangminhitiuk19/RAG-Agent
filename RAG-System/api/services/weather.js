@@ -37,33 +37,19 @@ class WeatherService {
   /**
    * Get current weather for a city
    * @param {string} city - City name
-   * @param {string} country - Optional country code
    * @returns {Promise<Object>} - Weather data
    */
-  async getWeatherByCity(city, country = null) {
+  async getWeatherByCity(city) {
     try {
-      const query = country ? `${city},${country}` : city;
-      console.log(`Getting weather for city=${city}, country=${country || 'none'}`);
+      console.log(`Getting weather for city=${city}`);
       
-      const url = `${this.baseUrl}/weather?q=${encodeURIComponent(query)}&appid=${this.apiKey}&units=${this.units}`;
+      const url = `${this.baseUrl}/weather?q=${encodeURIComponent(city)}&appid=${this.apiKey}&units=${this.units}`;
       const response = await axios.get(url);
       
-      return {
-        city: response.data.name,
-        country: response.data.sys?.country,
-        temperature: response.data.main.temp,
-        humidity: response.data.main.humidity,
-        pressure: response.data.main.pressure,
-        condition: response.data.weather[0]?.description || 'Unknown',
-        wind: {
-          speed: response.data.wind?.speed,
-          direction: response.data.wind?.deg
-        },
-        timestamp: new Date().toISOString()
-      };
+      return this._formatWeatherResponse(response.data);
     } catch (error) {
       console.error(`Error fetching weather for ${city}:`, error.message);
-      throw new Error(`Could not get weather data for ${city}`);
+      return null;
     }
   }
 

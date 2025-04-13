@@ -1,5 +1,5 @@
 const { openai } = require('./openai');
-
+const { imageRequestDetector } = require('./imageRequestDetector');
 /**
  * Service for generating structured responses based on intent
  * and providing metadata about the response
@@ -14,9 +14,38 @@ class ResponseGenerator {
      * @param {Object} agricultureAnalysis - Agriculture analysis
      * @returns {Object} - Processed response with metadata
      */
-    processResponse(response, intent, retrievalResults, agricultureAnalysis) {
+    processResponse(rawResponse, intent, retrievalResults, agricultureAnalysis) {
         // Extract citations
-        const citationInfo = this.extractCitations(response, retrievalResults);
+        const citationInfo = this.extractCitations(rawResponse, retrievalResults);
+        
+        // Check if we should request an image
+        const imageRequest = imageRequestDetector.shouldRequestImage(
+            rawResponse, 
+            intent,
+            agricultureAnalysis
+        );
+        
+        // Append image request message if appropriate
+        let finalResponse = citationInfo.processedResponse;
+        let imageRequestMessage = null;
+        
+        if (imageRequest.shouldRequest) {
+            // Get the primary crop from agriculture analysis
+            const primaryCrop = agricultureAnalysis?.detectedCrops?.[0]?.name;
+            
+            // Extract main symptom from the response
+            const symptoms = this.extractSymptoms(rawResponse);
+            const primarySymptom = symptoms.length > 0 ? symptoms[0] : null;
+            
+            // Generate the image request message
+            imageRequestMessage = imageRequestDetector.generateImageRequestMessage(
+                primaryCrop, 
+                primarySymptom
+            );
+            
+            // Add a separator and the image request
+            finalResponse = finalResponse + "\n\n" + imageRequestMessage;
+        }
         
         // Estimate confidence based on citations, intent, and ag analysis
         const confidence = this.estimateConfidence(
@@ -28,7 +57,7 @@ class ResponseGenerator {
         
         // Structure response based on intent
         const structuredResponse = {
-            response: citationInfo.processedResponse,
+            response: finalResponse,
             confidence: confidence,
             metadata: {
                 intent: intent,
@@ -36,7 +65,10 @@ class ResponseGenerator {
                 source_domains: this.extractSourceDomains(retrievalResults),
                 agriculture_topic: agricultureAnalysis?.primaryTopic,
                 crops: agricultureAnalysis?.detectedCrops.map(c => c.name),
-                citations_count: citationInfo.citationsFound.length
+                citations_count: citationInfo.citationsFound.length,
+                image_requested: imageRequest.shouldRequest,
+                image_request_confidence: imageRequest.confidence,
+                image_request_reason: imageRequest.reason
             }
         };
         
@@ -285,6 +317,26 @@ class ResponseGenerator {
         
         // Ensure confidence stays in range [0.1, 0.95]
         return Math.min(0.95, Math.max(0.1, confidence));
+    }
+    
+    extractSymptoms(response) {
+        const symptomPatterns = [
+            /symptom(?:s)? (?:include|such as|like) ([^.]+)/i,
+            /(?:seeing|noticing|observing) ([^.]+) on (?:the|your) (?:plant|leaf|leaves|crop)/i,
+            /(?:yellow|brown|black|white) (?:spot|discoloration|lesion|marking)s?/i,
+            /leaf (?:spot|curl|wilting|yellowing|browning)/i
+        ];
+        
+        const symptoms = [];
+        
+        for (const pattern of symptomPatterns) {
+            const match = response.match(pattern);
+            if (match && match[1]) {
+                symptoms.push(match[1].trim());
+            }
+        }
+        
+        return symptoms;
     }
 }
 

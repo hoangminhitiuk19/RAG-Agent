@@ -171,6 +171,31 @@ class VectorStoreManager {
       // Sort by relevance score
       return combinedResults.sort((a, b) => b.metadata.score - a.metadata.score);
     }
+    
+    async optimizedSearch(collection, query, limit = 10, filter = {}) {
+      try {
+        // Use a lower limit first for faster initial retrieval
+        const initialLimit = Math.min(limit, 5);
+        
+        const initialResults = await this.search(collection, query, initialLimit, filter);
+        
+        // If we got enough results and they're highly relevant, return them
+        if (initialResults.length >= initialLimit && 
+            initialResults[0].score > 0.8 && 
+            initialResults[initialLimit-1].score > 0.6) {
+          console.log(`Optimized search: returning ${initialResults.length} high-quality results`);
+          return initialResults;
+        }
+        
+        // Otherwise, perform the full search
+        console.log("Initial results insufficient, performing full search");
+        return await this.search(collection, query, limit, filter);
+      } catch (error) {
+        console.error("Error in optimized search:", error);
+        // Fall back to standard search
+        return await this.search(collection, query, limit, filter);
+      }
+    }
   }
 
 // Export singleton instance

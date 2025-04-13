@@ -51,7 +51,7 @@ class ContextSummarizer {
       `;
       
       const response = await openai.chat.completions.create({
-        model: "gpt-4o", // Use the configured model
+        model: "gpt-3.5-turbo", // Use the configured model
         response_format: { type: "json_object" },
         messages: [
           { role: "system", content: systemPrompt },
