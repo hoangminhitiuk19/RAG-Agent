@@ -14,7 +14,7 @@ import { setupDebugTools } from '@src/utils/debugUtils.js';
 import { createSupabaseClient, validateSupabaseClient } from '@src/utils/supabaseService.js';
 import { uploadImage } from '@src/services/imageService.js';
 import { setUserProfileId, setFarmId, setConversations } from '@src/utils/state.js';
-
+import './metadata-fix.js';
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', async () => {
