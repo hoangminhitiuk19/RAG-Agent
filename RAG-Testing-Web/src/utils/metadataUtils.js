@@ -1,57 +1,18 @@
-export function addMessage(message, sender = 'agent', timestamp = new Date(), imageUrl = null, metadata = null) {
-    const chatMessages = document.getElementById('chat-messages');
-    if (!chatMessages) return;
-    
-    const messageElement = document.createElement('div');
-    messageElement.className = `message ${sender}-message`;
+// Rewrite this file to avoid the import conflict and make it cleaner
 
-    const avatarElement = document.createElement('div');
-    avatarElement.className = 'message-avatar';
-    avatarElement.innerHTML = sender === 'user' ? '<i class="fas fa-user"></i>' 
-        : sender === 'system' ? '<i class="fas fa-exclamation-circle"></i>' 
-        : '<i class="fas fa-leaf"></i>';
-    messageElement.appendChild(avatarElement);
+// Remove this import as it causes circular dependency issues
+// import { formatMetadata } from './messageDisplayUtils.js';
 
-    const contentElement = document.createElement('div');
-    contentElement.className = 'message-content';
-
-    if (imageUrl) {
-        contentElement.innerHTML = `<div class="message-image-container"><img src="${imageUrl}" class="message-image" alt="Shared image"></div>`;
-    }
-    
-    contentElement.innerHTML += sender === 'user' ? message : formatMarkdown(message);
-    
-    // Add metadata tooltip if available
-    if (metadata) {
-        const metadataElement = document.createElement('div');
-        metadataElement.className = 'message-metadata';
-        metadataElement.innerHTML = formatMetadata(metadata);
-        contentElement.appendChild(metadataElement);
-        
-        // Store metadata as data attribute for potential later use
-        messageElement.dataset.metadata = typeof metadata === 'string' ? 
-            metadata : JSON.stringify(metadata);
-    }
-    
-    messageElement.appendChild(contentElement);
-
-    const timeElement = document.createElement('div');
-    timeElement.className = 'message-time';
-    timeElement.textContent = timestamp.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-    messageElement.appendChild(timeElement);
-
-    chatMessages.appendChild(messageElement);
-    scrollToBottom();
-    
-    return messageElement;
-}
+/**
+ * Utilities for handling message metadata
+ */
 
 /**
  * Format metadata object into readable HTML
  * @param {Object|string} metadata - The metadata to format
  * @returns {string} Formatted HTML string
  */
-export function formatMetadata(metadata) {
+function formatMetadataInternal(metadata) {
     if (!metadata) return '';
     
     // If metadata is a string, try to parse it as JSON
@@ -122,21 +83,56 @@ export function formatMetadata(metadata) {
     return result.join('');
 }
 
-export function formatMarkdown(text) {
-    if (!text) return '';
+/**
+ * Extract relevant metadata from a message object based on the Supabase schema
+ * @param {Object} message - The message object from the API
+ * @returns {Object} Formatted metadata object
+ */
+export function extractMetadata(message) {
+    if (!message) return null;
     
-    text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>'); // Links
-    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Bold
-    text = text.replace(/\*(.*?)\*/g, '<em>$1</em>'); // Italic
-    text = text.replace(/^\s*-\s+(.*?)$/gm, '<li>$1</li>').replace(/(<li>.*?<\/li>)/gs, '<ul>$1</ul>'); // Lists
-    text = `<p>${text.replace(/\n\n/g, '</p><p>')}</p>`; // Paragraphs
-    return text;
+    return {
+        id: message.id,
+        message_id: message.message_id || message.id,
+        conversation_id: message.conversation_id,
+        timestamp: message.created_at || message.timestamp || message.inserted_at,
+        role: message.role,
+        source: message.source,
+        topic: message.topic,
+        image_url: message.image_url,
+        extension: message.extension,
+        event: message.event,
+        private: message.private,
+        updated_at: message.updated_at,
+        metadata: message.metadata,
+        payload: message.payload
+    };
 }
 
-export function scrollToBottom() {
-    const chatMessages = document.getElementById('chat-messages');
-    if (chatMessages) {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+/**
+ * Add metadata to an existing message element
+ * @param {HTMLElement} messageElement - The message DOM element
+ * @param {Object} metadata - The metadata object
+ */
+export function addMetadataToMessage(messageElement, metadata) {
+    if (!messageElement || !metadata) return;
+    
+    // Format and add metadata tooltip
+    const contentElement = messageElement.querySelector('.message-content');
+    if (!contentElement) return;
+    
+    // Create or find metadata element
+    let metadataElement = contentElement.querySelector('.message-metadata');
+    if (!metadataElement) {
+        metadataElement = document.createElement('div');
+        metadataElement.className = 'message-metadata';
+        contentElement.appendChild(metadataElement);
     }
+    
+    // Update the tooltip content
+    metadataElement.innerHTML = formatMetadataInternal(metadata);
+    
+    // Store metadata as data attribute
+    messageElement.dataset.metadata = typeof metadata === 'string' ? 
+        metadata : JSON.stringify(metadata);
 }
-

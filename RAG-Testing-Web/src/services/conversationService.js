@@ -19,6 +19,22 @@ export function loadConversations() {
     }
 }
 
+export async function fetchConversation(conversationId) {
+    // Make sure the query includes metadata fields
+    const { data, error } = await supabase
+      .from('messages')
+      .select('id, role, content, created_at, metadata')
+      .eq('conversation_id', conversationId)
+      .order('created_at', { ascending: true });
+  
+    if (error) {
+      console.error('Error fetching conversation:', error);
+      return [];
+    }
+  
+    return data;
+  }
+
 export function saveConversation(conversationId, isComplete, message) {
     if (!conversationId) return;
     
@@ -165,7 +181,19 @@ export async function loadConversation(id, apiUrl, chatMessages) {
         // Display messages
         if (data && data.messages && data.messages.length) {
             data.messages.forEach(msg => {
-                addMessage(msg.content, msg.role);
+                // Extract metadata from the message object
+                const metadata = {
+                    id: msg.id,
+                    conversation_id: msg.conversation_id,
+                    timestamp: msg.created_at || msg.timestamp || msg.inserted_at,
+                    role: msg.role,
+                    source: msg.source,
+                    topic: msg.topic,
+                    metadata: msg.metadata
+                };
+                
+                // Pass metadata as the fifth parameter to addMessage
+                addMessage(msg.content, msg.role, new Date(metadata.timestamp), msg.image_url, metadata);
             });
         } else {
             addMessage('No messages found in this conversation.', 'system');
@@ -179,3 +207,4 @@ export async function loadConversation(id, apiUrl, chatMessages) {
         return null;
     }
 }
+

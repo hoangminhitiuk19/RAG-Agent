@@ -38,7 +38,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Ensure Supabase client is working
     if (!validateSupabaseClient(supabase)) {
         console.error('Failed to initialize Supabase client. Some features may not work.');
+    } else {
+        window.supabaseClient = supabase;
+        console.log('Supabase client initialized successfully');
     }
+
     
     // Get user ID and store in state
     const userProfileId = localStorage.getItem('currentUserProfileId') || DEFAULT_USER_PROFILE_ID;
@@ -78,3 +82,82 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Add a startup message to console for debugging
     console.log('Application initialization complete with cache clearing');
 });
+
+
+// Add a button to manually show metadata
+// Add a button to manually show metadata
+function addMetadataButton() {
+    // Check if button already exists
+    if (document.querySelector('#metadata-button')) return;
+    
+    const button = document.createElement('button');
+    button.id = 'metadata-button';
+    button.textContent = "Show Metadata";
+    button.style.position = "fixed";
+    button.style.bottom = "8px";
+    button.style.left = "130px";
+    button.style.padding = "10px 15px";
+    button.style.backgroundColor = "#4CAF50";
+    button.style.color = "white";
+    button.style.border = "none";
+    button.style.borderRadius = "4px";
+    button.style.zIndex = "10000";
+    button.style.cursor = "pointer";
+    button.style.boxShadow = "0 2px 5px rgba(0,0,0,0.2)";
+    button.style.fontSize = "14px";
+    button.style.fontWeight = "bold";
+    
+    button.addEventListener('click', function() {
+        // If our global function exists, call it
+        if (typeof window.showMessageMetadata === 'function') {
+            window.showMessageMetadata();
+            button.textContent = "Metadata Updated";
+            setTimeout(() => {
+                button.textContent = "Show Metadata";
+            }, 1500);
+        } else {
+            button.textContent = "Error: Function Not Found";
+            setTimeout(() => {
+                button.textContent = "Show Metadata";
+            }, 1500);
+        }
+    });
+    
+    document.body.appendChild(button);
+}
+
+// Call this after initialization
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(addMetadataButton, 1000);
+    });
+} else {
+    // Document already loaded
+    setTimeout(addMetadataButton, 1000);
+}
+
+
+function initializeSupabase() {
+    // Check if Supabase is already initialized
+    if (window.supabaseClient) return;
+    
+    // Get credentials from wherever they're stored in your app
+    const url = localStorage.getItem('supabase_url');
+    const key = localStorage.getItem('supabase_key');
+    
+    if (!url || !key) {
+        console.warn('Supabase credentials not found in localStorage');
+        return;
+    }
+    
+    // Initialize if the supabase library is available
+    if (window.supabase && typeof window.supabase.createClient === 'function') {
+        window.supabaseUrl = url;
+        window.supabaseKey = key;
+        window.supabaseClient = window.supabase.createClient(url, key);
+        console.log('Supabase client initialized from local storage');
+    } else {
+        console.error('Supabase library not loaded');
+    }
+}
+

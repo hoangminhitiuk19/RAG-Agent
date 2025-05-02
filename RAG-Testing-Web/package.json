@@ -10,8 +10,8 @@
     "lint": "eslint src/**/*.js",
     "start": "vite preview --port 8889"
   },
-  "dependencies": {},
   "devDependencies": {
+    "dotenv": "^16.5.0",
     "http-server": "^14.1.1",
     "rimraf": "^5.0.1",
     "vite": "^5.0.10"

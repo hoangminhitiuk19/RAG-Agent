@@ -1,7 +1,6 @@
 import { updateConversationId } from '../utils/conversationUIUtils.js';
 import { saveConversation } from './conversationService.js';
-import { scrollToBottom } from '../utils/messageDisplayUtils.js';
-import { addMessage } from '../utils/messageDisplayUtils.js';
+import { addMessage, scrollToBottom, formatMarkdown, formatMetadata } from '../utils/messageDisplayUtils.js';
 import { finalizeMessage } from '../utils/messageUtils.js';
 import { setConversationId, getConversationId } from '../utils/state.js'; // Added import for state management
 
@@ -70,16 +69,6 @@ function hideTypingIndicator() {
     document.getElementById('typing-indicator').classList.add('hidden');
 }
 
-function formatMarkdown(text) {
-    if (!text) return '';
-    
-    text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>'); // Links
-    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Bold
-    text = text.replace(/\*(.*?)\*/g, '<em>$1</em>'); // Italic
-    text = text.replace(/^\s*-\s+(.*?)$/gm, '<li>$1</li>').replace(/(<li>.*?<\/li>)/gs, '<ul>$1</ul>'); // Lists
-    text = `<p>${text.replace(/\n\n/g, '</p><p>')}</p>`; // Paragraphs
-    return text;
-}
 
 function appendSources(messageElement, sources) {
     if (!sources?.length) return;
@@ -126,6 +115,29 @@ function appendFollowUpQuestions(messageElement, questions) {
     });
 
     messageElement.appendChild(questionsContainer);
+}
+function appendMetadata(messageElement, metadata) {
+    if (!messageElement || !metadata) return;
+    
+    // Find the message-content element
+    const contentElement = messageElement.querySelector('.message-content');
+    if (!contentElement) return;
+    
+    // Check if metadata element already exists
+    let metadataElement = contentElement.querySelector('.message-metadata');
+    if (!metadataElement) {
+        // Create a new metadata element
+        metadataElement = document.createElement('div');
+        metadataElement.className = 'message-metadata';
+        contentElement.appendChild(metadataElement);
+    }
+    
+    // Add the formatted metadata (no import needed here anymore)
+    metadataElement.innerHTML = formatMetadata(metadata);
+    
+    // Also store metadata as data attribute on the message element
+    messageElement.dataset.metadata = typeof metadata === 'string' ? 
+        metadata : JSON.stringify(metadata);
 }
 
 export async function processStreamingResponse(response, showTranslationNotice = false) {
@@ -200,9 +212,14 @@ export async function processStreamingResponse(response, showTranslationNotice =
                             } else {
                                 console.warn('No conversation ID available for completed message');
                             }
-
+                        
                             if (sources.length > 0) appendSources(currentMessage, sources);
                             if (followUpQuestions.length > 0) appendFollowUpQuestions(currentMessage, followUpQuestions);
+                            
+                            // Add metadata to the message if available
+                            if (data.metadata) {
+                                appendMetadata(currentMessage, data.metadata);
+                            }
                         }
                     } catch (err) {
                         console.error('Error parsing event data:', err);

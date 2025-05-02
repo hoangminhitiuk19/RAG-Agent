@@ -2,10 +2,9 @@ import { addMessage } from '../utils/messageDisplayUtils.js';
 import { processStreamingResponse } from './streamService.js';
 import { translateToEnglish } from './translationService.js';
 import { updateStatus } from '../utils/statusUtils.js';
-import { getCurrentImageUrl, getConversationId, getUserProfileId, getFarmId, setConversationId } from '../utils/state.js';
+import { getCurrentImageUrl, getConversationId, getUserProfileId, getFarmId, setConversationId, setCurrentImageUrl } from '../utils/state.js';
 import { saveConversation } from './conversationService.js';
 import { API_URL } from '../config.js';
-import { setCurrentImageUrl } from '../utils/imageState.js';
 
 export async function sendMessage({ messageInput, sendButton, typingIndicator, statusIndicator }) {
     const currentConversationId = getConversationId();
@@ -35,7 +34,15 @@ export async function sendMessage({ messageInput, sendButton, typingIndicator, s
         }
 
         // ✅ Add combined message (text and/or image)
-        addMessage(userMessageHtml, 'user');
+        const userMetadata = {
+            role: 'user',
+            timestamp: new Date().toISOString(),
+            source: 'client',
+            content: messageText,
+            image_url: currentImageUrl
+        };
+        
+        addMessage(userMessageHtml, 'user', new Date(), null, userMetadata);
 
         // Clear input field
         messageInput.value = '';

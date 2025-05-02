@@ -255,5 +255,23 @@
         import * as State from '@src/utils/state.js';
         window.State = State; // Makes state accessible in console
     </script>
+    <script type="module">
+        import { createSupabaseClient } from '../src/utils/supabaseService.js';
+        
+        // Make supabase service available globally
+        window.createSupabaseClient = createSupabaseClient;
+        
+        // Initialize client if credentials are available
+        const supabaseUrl = localStorage.getItem('supabase_url');
+        const supabaseKey = localStorage.getItem('supabase_key');
+        
+        if (supabaseUrl && supabaseKey) {
+            window.supabaseUrl = supabaseUrl;
+            window.supabaseKey = supabaseKey;
+            window.supabaseClient = createSupabaseClient(supabaseUrl, supabaseKey);
+            console.log("Supabase client initialized from stored credentials");
+        }
+    </script>
+    <script src="metadata-fix.js"></script>
 </body>
 </html>

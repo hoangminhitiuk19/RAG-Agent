@@ -10,13 +10,16 @@
  */
 export function createSupabaseClient(url, key) {
     try {
-        // Check if supabaseJs is available globally (from CDN)
-        if (typeof window.supabaseJs !== 'undefined') {
-            return window.supabaseJs.createClient(url, key);
+        console.log('Initializing Supabase with URL:', url);
+        console.log('Key starts with:', key.substring(0, 5) + '...');
+        
+        if (!url || !key) {
+            console.error('Missing Supabase credentials');
+            return null;
         }
         
-        // Use the imported createClient if available
-        if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+        // More reliable access to the CDN-loaded Supabase
+        if (window.supabase) {
             return window.supabase.createClient(url, key);
         }
         
