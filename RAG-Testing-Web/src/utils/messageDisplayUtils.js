@@ -20,25 +20,9 @@ export function addMessage(message, sender = 'agent', timestamp = new Date(), im
     }
     
     contentElement.innerHTML += sender === 'user' ? message : formatMarkdown(message);
-    
-    // // Add metadata tooltip if available
-    // if (metadata) {
-    //     const metadataElement = document.createElement('div');
-    //     metadataElement.className = 'message-metadata';
-    //     metadataElement.innerHTML = formatMetadata(metadata);
-    //     contentElement.appendChild(metadataElement);
-        
-    //     // Store metadata as data attribute for potential later use
-    //     messageElement.dataset.metadata = typeof metadata === 'string' ? 
-    //         metadata : JSON.stringify(metadata);
-    // }
+
     
     messageElement.appendChild(contentElement);
-
-    // const timeElement = document.createElement('div');
-    // timeElement.className = 'message-time';
-    // timeElement.textContent = timestamp.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-    // messageElement.appendChild(timeElement);
 
     chatMessages.appendChild(messageElement);
     scrollToBottom();
