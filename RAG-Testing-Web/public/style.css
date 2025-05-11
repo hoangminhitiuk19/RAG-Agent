@@ -160,6 +160,40 @@ body {
     text-overflow: ellipsis;
     white-space: nowrap;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: max-width 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.conversation-id:hover {
+    max-width: 600px; /* Expand to show full ID on hover */
+    overflow: visible;
+    z-index: 100; /* Ensure it appears above other elements */
+}
+
+/* Add a tooltip for mobile users who can't hover */
+.conversation-id::after {
+    content: attr(title);
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    margin-top: 5px;
+    z-index: 101;
+}
+
+.conversation-id:active::after {
+    visibility: visible;
+    opacity: 1;
 }
 
 /* Sidebar styling */

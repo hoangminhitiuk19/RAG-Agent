@@ -3,7 +3,7 @@ import { API_URL, SUPABASE_URL, SUPABASE_ANON_KEY, DEFAULT_USER_PROFILE_ID, DEFA
 import { setupDomElements } from '@src/utils/domUtils.js';
 import { setupEventListeners } from '@src/utils/eventUtils.js';
 import { sendMessage } from '@src/services/chatService.js';
-import { startNewConversation, updateConversationId, updateActiveConversation } from '@src/utils/conversationUIUtils.js';
+import { startNewConversation, updateConversationId, updateActiveConversation, initUI } from '@src/utils/conversationUIUtils.js';
 import { loadConversations } from '@src/services/conversationService.js';
 import { checkApiHealth } from '@src/services/apiHealthService.js';
 import { initializeUserData } from '@src/services/userService.js';
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Clear all caches forcefully on startup
     await clearAllCaches();
-    
+    initUI();
     // Initialize utilities
     preventCaching();
     addTranslationNoticeStyles();
